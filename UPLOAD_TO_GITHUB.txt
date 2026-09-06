@@ -1,0 +1,37 @@
+CDS REPORT / 01 — GITHUB PAGES DEPLOYMENT
+Public app version: v1.0.0
+
+Repository name:
+cds-interactive-camera-report
+
+UPLOAD THE CONTENTS OF THIS FOLDER TO THE REPOSITORY ROOT:
+.nojekyll
+README.md
+index.html
+manifest.webmanifest
+robots.txt
+sw.js
+icons/
+
+Then on GitHub:
+Settings → Pages
+Source: Deploy from a branch
+Branch: main
+Folder: / (root)
+Save
+
+Expected Pages address:
+https://nicolaslastschenko.github.io/cds-interactive-camera-report/
+
+After GitHub reports that the site is live:
+1. Open the URL on Mac.
+2. Create a test project and log several takes.
+3. Generate/preview/open a PDF.
+4. Export CSV and JSON backup.
+5. Open the same URL on iPhone.
+6. Test Safari and then Share → Add to Home Screen.
+7. Open the Home Screen app, confirm it starts and project data persists.
+8. Turn off Wi‑Fi briefly and confirm the installed app can reopen offline after it has been loaded once online.
+
+The manifest uses the LIGHT REPORT icon as the installed app icon.
+The dark icon is included as icons/report-icon-dark.png but is not used by the manifest.

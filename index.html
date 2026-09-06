@@ -1,0 +1,2026 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CDS REPORT / 01 — Interactive Camera Report</title>
+<meta name="description" content="Local-first interactive camera report for fast on-set camera logging.">
+<meta name="theme-color" content="#0d0d0c">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Camera Report">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<style>
+:root{
+  --paper:#f3f0e8;--paper2:#e9e5dc;--ink:#11110f;--muted:#6c6860;--line:#c9c4b9;--card:#f8f6f0;
+  --good:#1f6b48;--bad:#9f342b;--warn:#d9ad37;--radius:14px;--max:1440px;
+}
+html[data-theme="dark"]{
+  --paper:#0d0d0c;--paper2:#151513;--ink:#f1eee6;--muted:#aaa69d;--line:#33312d;--card:#121210;
+  --good:#65c99a;--bad:#ff8d82;--warn:#f3c94f;
+}
+/* CDS FAMILY BORDER RULE:
+   substantial windows/cards use var(--ink);
+   editable form controls use 1px var(--line), changing to var(--ink) on focus. */
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}button{cursor:pointer}.hidden{display:none!important}
+.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 93%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topinner{height:66px;max-width:var(--max);margin:auto;padding:0 18px;display:flex;align-items:center;gap:12px}.productbrand{margin-right:auto;display:flex;align-items:center;gap:11px;min-width:0}.appmark{display:grid;place-items:center;flex:0 0 auto;border:1px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:900;line-height:1;user-select:none}.appmark-small{width:38px;height:38px;border-radius:9px;font-size:.7rem;letter-spacing:.1em;padding-left:.1em}.productbrandtext{min-width:0}.productbrandtext b{display:flex;align-items:baseline;white-space:nowrap;font-size:.82rem;line-height:1.08;letter-spacing:.11em;text-transform:uppercase}.productversion{margin-left:.15em;color:inherit}
+.iconbtn,.softbtn,.solidbtn,.dangerbtn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:transparent;border-radius:999px;min-height:42px;padding:0 16px;font-size:.78rem;font-weight:760;line-height:1.1;white-space:nowrap}.solidbtn{background:var(--ink);color:var(--paper);border-color:var(--ink)}.dangerbtn{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}.iconbtn{width:42px;padding:0}.softbtn:hover,.iconbtn:hover{background:var(--paper2)}
+.langswitch{height:38px;display:flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--paper);gap:2px;flex:0 0 auto}.langchoice{height:30px;min-width:37px;border:0;border-radius:999px;background:transparent;color:var(--muted);padding:0 9px;font-size:.66rem;font-weight:850;letter-spacing:.08em}.langchoice:hover{color:var(--ink);background:var(--paper2)}.langchoice.active{background:var(--ink);color:var(--paper)}
+.shell{max-width:1120px;margin:auto;padding:0 34px}#launchView{padding-left:34px;padding-right:34px}#launchView.launch{padding-top:clamp(34px,4.5vw,62px);padding-bottom:clamp(34px,4.5vw,62px)}.launch-title{font-size:clamp(3.2rem,6.8vw,6.65rem);font-weight:900;line-height:.89;letter-spacing:-.06em;margin:0;max-width:920px}.launch-title span{display:block}.launch .lede{font-size:clamp(1.05rem,2vw,1.35rem);color:var(--muted);max-width:820px;margin:20px 0 23px}.launch-actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.privacy{border-top:1px solid var(--line);padding-top:22px;margin-top:45px;color:var(--muted);font-size:.84rem;max-width:820px}.project-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:12px;margin-top:24px}.project-card{border:1px solid var(--ink);background:var(--card);border-radius:var(--radius);overflow:hidden}.project-open{display:block;width:100%;border:0;background:transparent;color:inherit;text-align:left;padding:18px}.project-open:hover{background:var(--paper2)}.project-card strong{display:block;font-size:1.08rem;margin-bottom:5px}.project-card small{color:var(--muted)}.project-card .meta{margin-top:15px;display:flex;justify-content:space-between;gap:8px;font-size:.69rem;color:var(--muted)}.project-actions{display:flex;align-items:center;gap:7px;padding:10px 12px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--paper2) 55%,transparent)}.project-actions .dangerbtn{margin-left:auto}.empty{color:var(--muted);padding:30px 0;text-align:center}
+.empty-project-library{grid-column:1/-1;border:1px solid var(--ink);border-radius:var(--radius);padding:20px;background:var(--card);display:flex;flex-direction:column;gap:4px}
+.empty-project-library strong{font-size:1rem}
+.empty-project-library span{color:var(--muted);font-size:.82rem}
+.workspace{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:calc(100vh - 66px)}.sidebar{position:sticky;top:66px;align-self:start;height:calc(100vh - 66px);overflow:auto;border-right:1px solid var(--line);padding:18px 14px 30px}.sideproject{padding:8px 9px 18px;border-bottom:1px solid var(--line);margin-bottom:12px}.sideproject strong{display:block;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sideproject small{color:var(--muted)}.navsection{display:flex;width:100%;gap:10px;align-items:center;text-align:left;border:1px solid transparent;background:transparent;border-radius:9px;padding:10px 9px;margin:2px 0}.navsection:hover{background:var(--paper2)}.navsection.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}.navnum{font-size:.66rem;font-weight:850;letter-spacing:.1em;min-width:24px}.navtxt b{display:block;font-size:.74rem;line-height:1.15}.navtxt small{font-size:.64rem;color:var(--muted)}.navsection.active small{color:color-mix(in srgb,var(--paper) 70%,transparent)}
+.main{min-width:0}.dash{position:sticky;top:66px;z-index:30;border-bottom:1px solid var(--line);padding:14px 22px;background:color-mix(in srgb,var(--paper) 96%,transparent);backdrop-filter:blur(12px)}.dashrow{display:flex;align-items:center;gap:10px}.dashproject{font-weight:820;margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.content{padding:clamp(26px,4vw,50px);max-width:1180px}.mobile-nav{display:none;overflow:visible}
+.mobile-section-control{position:relative;flex:1;min-width:0}
+.mobile-section-button{width:100%;min-height:40px;border:1px solid var(--ink);border-radius:10px;background:var(--paper);display:flex;align-items:center;gap:10px;padding:8px 10px;text-align:left;color:var(--ink)}
+.mobile-section-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.mobile-section-left strong{font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mobile-section-chevron{margin-left:4px;color:var(--muted);font-size:.9rem}
+.mobile-section-menu{position:absolute;left:0;right:0;top:calc(100% + 7px);z-index:90;border:1px solid var(--ink);border-radius:12px;background:var(--paper);box-shadow:0 15px 35px rgba(0,0,0,.13);padding:5px;max-height:min(66vh,460px);overflow:auto}
+.mobile-section-row{width:100%;border:0;background:transparent;color:var(--ink);border-radius:8px;display:flex;align-items:center;gap:10px;text-align:left;padding:10px}
+.mobile-section-row:hover,.mobile-section-row.active{background:var(--paper2)}
+.mobile-section-row.active .mobile-section-left strong{font-weight:900}
+.sectionhead{margin-bottom:28px}.sectioncode{font-size:.7rem;font-weight:850;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.sectionhead h2{font-size:clamp(2.3rem,5vw,4.7rem);line-height:.93;letter-spacing:-.055em;margin:0 0 12px}.sectionhead p{font-size:1.02rem;color:var(--muted);max-width:760px;margin:0}
+.card{border:1px solid var(--ink);background:var(--card);border-radius:var(--radius);padding:18px}.card+.card{margin-top:14px}.cardhead{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}.cardhead h3{margin:0;font-size:1rem}.cardhead p{margin:3px 0 0;color:var(--muted);font-size:.82rem}.cardhead .softbtn{margin-left:auto}.eyebrow{margin:0 0 8px;color:var(--muted);font-size:.65rem;font-weight:850;letter-spacing:.15em;text-transform:uppercase}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.field label{display:block;font-size:.67rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--paper);padding:10px 12px;outline:none;min-height:46px;color:var(--ink)}.field input::placeholder,.field textarea::placeholder{color:var(--muted);opacity:1}.field textarea{min-height:100px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--ink);box-shadow:none}.wide{grid-column:1/-1}
+.shootstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}.statbox{border:1px solid var(--line);background:var(--card);border-radius:11px;padding:11px 13px}.statbox small{display:block;color:var(--muted);font-size:.6rem;font-weight:850;letter-spacing:.1em;text-transform:uppercase}.statbox b{display:block;margin-top:2px;font-size:1.15rem}.takehero{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-bottom:14px}.takehero small{display:block;color:var(--muted);font-size:.64rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase}.takehero strong{display:block;font-size:clamp(2.4rem,7vw,4.3rem);line-height:.95;letter-spacing:-.05em}.takecount{font-size:1.2rem;color:var(--muted);white-space:nowrap}.takecount b{color:var(--ink)}
+.statebar{margin:18px 0 9px;font-size:.64rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.timerhint{margin:-2px 0 10px;color:var(--muted);font-size:.76rem}.resultfields{display:grid;grid-template-columns:minmax(140px,190px) minmax(0,1fr);gap:10px;margin-top:12px}.durationinput{font-variant-numeric:tabular-nums}.statebar.secondary{margin-top:14px}
+.recordingline{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 0;font-size:.82rem;font-weight:800}.recorddot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--bad);margin-right:7px}.timer{font-size:1.1rem;font-weight:900;font-variant-numeric:tabular-nums}
+.flaggrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.flagbtn{min-height:52px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);display:flex;align-items:center;justify-content:center;gap:7px;padding:7px 8px}
+.flagbtn b{font-size:.8rem;font-weight:900;letter-spacing:.03em}
+.flagbtn span{font-size:.66rem;font-weight:760;line-height:1.05;color:var(--muted)}
+.flagbtn[data-flag="○"] b{color:var(--good)}
+.flagbtn[data-flag="H"] b,.flagbtn[data-flag="FS"] b{color:color-mix(in srgb,var(--warn) 72%,var(--ink) 28%)}
+.flagbtn[data-flag="NG"] b{color:var(--bad)}
+.flagbtn[data-flag="MOS"] b,.flagbtn[data-flag="VFX"] b{color:var(--muted)}
+.flagbtn.active[data-flag="○"]{background:var(--good);color:#fff;border-color:var(--good)}
+.flagbtn.active[data-flag="○"] b,.flagbtn.active[data-flag="○"] span{color:#fff}
+.flagbtn.active[data-flag="H"]{background:var(--warn);color:#111;border-color:color-mix(in srgb,var(--warn) 82%,#000 18%)}
+.flagbtn.active[data-flag="H"] b,.flagbtn.active[data-flag="H"] span{color:#111}
+.flagbtn.active[data-flag="NG"]{background:var(--bad);color:#fff;border-color:var(--bad)}
+.flagbtn.active[data-flag="NG"] b,.flagbtn.active[data-flag="NG"] span{color:#fff}
+.flagbtn.active[data-flag="FS"]{background:var(--warn);color:#111;border-color:color-mix(in srgb,var(--warn) 82%,#000 18%)}
+.flagbtn.active[data-flag="FS"] b,.flagbtn.active[data-flag="FS"] span{color:#111}
+.flagbtn.active[data-flag="MOS"],.flagbtn.active[data-flag="VFX"]{background:var(--muted);color:var(--paper);border-color:var(--muted)}
+.flagbtn.active[data-flag="MOS"] b,.flagbtn.active[data-flag="MOS"] span,.flagbtn.active[data-flag="VFX"] b,.flagbtn.active[data-flag="VFX"] span{color:var(--paper)}
+.flaghint{margin:8px 0 0;color:var(--muted);font-size:.67rem;line-height:1.35}
+.takeactions{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:10px;margin-top:14px}.rollbtn,.savebtn{width:100%;min-height:56px;border-radius:10px;font-weight:900}#saveSetupBtn{margin-top:20px}.rollbtn{border:1px solid var(--ink);background:var(--paper);color:var(--ink);font-size:.92rem;letter-spacing:.13em}.rollbtn.recording{background:var(--ink);color:var(--paper)}.savebtn{border:1px solid var(--ink);background:var(--ink);color:var(--paper);font-size:.88rem;letter-spacing:.055em}.quickrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}.quickrow .softbtn{border-radius:10px;min-height:46px;border-color:var(--ink);font-weight:820;background:var(--paper)}
+.tablewrap{overflow:auto;max-height:390px;border:1px solid var(--ink);border-radius:var(--radius);background:var(--card);-webkit-overflow-scrolling:touch}table{width:100%;border-collapse:collapse;min-width:860px}th{font-size:.6rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2;background:var(--card)}td{font-size:.76rem;padding:9px 8px;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);white-space:nowrap}tbody tr:last-child td{border-bottom:0}.notescol{min-width:180px;white-space:normal}.flagcell{font-weight:850}
+.tableempty{text-align:center;color:var(--muted);padding:28px!important}.reportactions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.outputblock{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.outputblock-title{margin:0 0 12px;font-size:.66rem;font-weight:850;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}.docgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch}.outputcard{border:1px solid var(--ink);border-radius:var(--radius);background:var(--card);padding:17px;display:flex;flex-direction:column}.outputcard small{display:block;color:var(--muted);font-size:.62rem;font-weight:850;letter-spacing:.11em;text-transform:uppercase}.outputcard h3{margin:7px 0 6px;font-size:1rem}.outputcard p{margin:0 0 14px;color:var(--muted);font-size:.8rem}.outputcard .softbtn,.outputcard .solidbtn{width:100%;border-radius:9px;margin-top:auto}.outputcard .solidbtn:disabled{opacity:.38;cursor:not-allowed}.printscope{margin:14px 0 10px;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}.printscope .field label{margin-bottom:6px}.printscope-help{margin:0 0 8px!important;font-size:.72rem!important;color:var(--muted)!important;line-height:1.35}.printscope select{background:var(--card)}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:18px}.modalbox{width:min(760px,100%);max-height:88vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:24px}.modalhead{display:flex;align-items:center;gap:12px;margin-bottom:18px}.modalhead h2{margin:0;margin-right:auto}.infosection{padding:13px 0;border-top:1px solid var(--line)}.infosection:first-of-type{border-top:0;padding-top:0}.infosection h3{margin:0 0 5px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}.infosection p{margin:0;color:var(--muted);font-size:.82rem}.infosection p+p{margin-top:7px}.versionline{border-top:1px solid var(--line);margin-top:20px;padding-top:12px;font-size:.68rem;color:var(--muted);letter-spacing:.06em}.toast{position:fixed;right:18px;bottom:18px;z-index:110;background:var(--ink);color:var(--paper);border-radius:999px;padding:10px 15px;font-size:.75rem;font-weight:760;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+#fileImport{display:none}#printReport{display:none}
+@media(max-width:900px){.workspace{grid-template-columns:1fr}.sidebar{display:none}.mobile-nav{display:flex;align-items:center;gap:10px;position:sticky;top:66px;z-index:36;background:color-mix(in srgb,var(--paper) 96%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:8px 14px}.mobile-nav label{font-size:.62rem;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.dash{position:static;padding:12px 14px}.docgrid{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.topinner{height:58px;padding-left:16px;padding-right:16px;gap:8px}.topbar{min-height:58px}.productbrand{gap:9px}.productbrandtext b{font-size:.82rem}.productversion{display:none}.appmark-small{width:38px;height:38px}.langswitch{height:36px}.langchoice{height:28px;min-width:31px;padding:0 6px}.iconbtn{width:36px;min-height:36px}#launchView{max-width:none;padding-left:16px!important;padding-right:16px!important}#launchView.launch{padding-top:24px!important;padding-bottom:42px!important}.launch-title{font-size:clamp(3rem,14vw,4.2rem);line-height:.8}.launch .lede{font-size:.98rem;margin:17px 0 18px}.launch-actions{gap:8px}.launch-actions .solidbtn,.launch-actions .softbtn{min-height:40px;padding:0 10px;font-size:.72rem}.workspace{min-height:calc(100vh - 58px)}.mobile-nav{top:58px;padding:8px 18px}.mobile-nav label{font-size:.61rem}.mobile-section-button{min-height:43px;padding:10px 12px}.mobile-section-left strong{font-size:.87rem}.dash{padding:10px 18px 12px}.dashproject{font-size:.9rem}.content{padding:22px 16px}.sectionhead h2{font-size:2.55rem}.fields,.grid3,.shootstats,.docgrid{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.field input,.field select{min-height:44px;height:44px;font-size:16px}.flaggrid{grid-template-columns:repeat(3,minmax(0,1fr))}.quickrow{grid-template-columns:1fr 1fr}.takeactions{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)}.rollbtn,.savebtn{min-height:52px}.rollbtn{font-size:.82rem}.savebtn{font-size:.75rem;letter-spacing:.035em}.resultfields{grid-template-columns:1fr}.takehero{align-items:flex-start}.takecount{font-size:1rem}.project-list{grid-template-columns:1fr;gap:10px}}
+@media print{
+  @page{size:A4 portrait;margin:0!important}
+  html,html[data-theme="dark"],html[data-theme="light"]{--paper:#fff;--paper2:#f3f3f3;--ink:#000;--muted:#555;--line:#bbb;--card:#fff}
+  html,body{margin:0!important;padding:0!important;background:#fff!important}body{color:#000!important;font-size:9pt}.topbar,#launchView,#appView,.modal,.toast{display:none!important}#printReport{display:block!important;margin:0!important;padding:0!important;color:#000!important;background:#fff!important}
+  .pr-mast{display:flex;align-items:flex-end;gap:12px;border-bottom:1px solid #111;padding-bottom:7px;margin-bottom:9px}.pr-brand b{display:block;font-size:24px;font-weight:900;line-height:.9}.pr-brand small{display:block;font-size:5.8px;font-weight:700;letter-spacing:.22em;margin-top:5px;text-transform:uppercase}.pr-code{margin-left:auto;font-size:5.8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-align:right}.pr-doccode{font-size:6.2px;font-weight:850;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;color:#444}.pr-title{font-size:21px;letter-spacing:-.04em;font-weight:900;line-height:.96;margin:0 0 4px;text-transform:uppercase}.pr-sub{font-size:7.6px;color:#555;margin:0 0 10px}.pr-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px 12px;margin-bottom:10px}.pr-meta div{border-bottom:1px solid #bbb;padding-bottom:3px;min-height:21px}.pr-meta b{display:block;font-size:5.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#555}.pr-meta span{display:block;font-size:7.4px;font-weight:700;margin-top:2px}.pr-table{width:100%;min-width:0;border-collapse:collapse}.pr-table th{font-size:5.4px;padding:4px 3px;border-bottom:1px solid #111}.pr-table td{font-size:6.3px;padding:4px 3px;border-bottom:1px solid #d0d0d0;vertical-align:top}
+.pr-table tr.take-preferred td:first-child{border-left:3px solid #22835b}
+.pr-table tr.take-hold td:first-child,.pr-table tr.take-fs td:first-child{border-left:3px solid #d28a00}
+.pr-table tr.take-ng td:first-child{border-left:3px solid #b23a32}
+.pr-table tr.take-preferred .flagcell{color:#22835b;font-weight:900}
+.pr-table tr.take-hold .flagcell,.pr-table tr.take-fs .flagcell{color:#c57d00;font-weight:900}
+.pr-table tr.take-ng .flagcell{color:#b23a32;font-weight:900}
+.pr-table .pr-notes{white-space:normal;min-width:95px}.pr-page-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #999;padding-top:5px;font-size:5.5px;font-weight:400;letter-spacing:.07em;color:#444;text-transform:uppercase}
+}
+
+.daybar{display:flex;align-items:end;gap:10px;flex-wrap:wrap;border:1px solid var(--ink);background:var(--card);border-radius:var(--radius);padding:12px 14px;margin:0 0 14px}.daybar .daymain{min-width:210px;flex:1}.daybar label{display:block;font-size:.6rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}.daybar select{width:100%;min-height:42px;border:1px solid var(--line);border-radius:9px;background:var(--paper);padding:8px 10px;outline:none}.daybar select:focus{border-color:var(--ink);box-shadow:none}.daymeta{font-size:.76rem;color:var(--muted);padding:0 4px 9px}.scopebar{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin-bottom:14px}.scopebar .field{min-width:240px;flex:0 1 380px}.checkrow{display:flex;align-items:center;gap:9px;padding:10px 0;color:var(--muted);font-size:.82rem}.checkrow input{width:18px;height:18px}.project-days{font-size:.68rem;color:var(--muted);margin-top:4px}.day-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}.day-summary .statbox{background:var(--card)}
+@media(max-width:640px){.daybar{align-items:stretch}.daybar .softbtn{width:100%;border-radius:9px}.day-summary{grid-template-columns:1fr 1fr 1fr}.scopebar .field{min-width:100%;width:100%}}
+@media print{
+  @page{size:A4 portrait;margin:0!important}
+  html,body{
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+  }
+  #printReport{
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+  }
+  #printReport .pr-page{
+    position:relative!important;
+    box-sizing:border-box!important;
+    width:210mm!important;
+    height:295mm!important;
+    min-height:295mm!important;
+    margin:0!important;
+    padding:8mm 8mm 6mm!important;
+    overflow:hidden!important;
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr) auto!important;
+    break-after:auto!important;
+    page-break-after:auto!important;
+    break-inside:avoid-page!important;
+    page-break-inside:avoid!important;
+    background:#fff!important;
+    color:#000!important;
+  }
+  #printReport .pr-page + .pr-page{
+    break-before:auto!important;
+    page-break-before:auto!important;
+  }
+  #printReport .pr-page:last-child{
+    height:292mm!important;
+    min-height:292mm!important;
+    break-after:avoid!important;
+    page-break-after:avoid!important;
+  }
+  #printReport .pr-running{
+    grid-row:1!important;
+    min-width:0!important;
+  }
+  #printReport .pr-page-body{
+    grid-row:2!important;
+    min-height:0!important;
+    padding-bottom:0!important;
+    overflow:hidden!important;
+  }
+  #printReport .pr-page-footer{
+    grid-row:3!important;
+    position:static!important;
+    left:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    margin:0!important;
+    align-self:end!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+  .pr-daytitle{display:flex;align-items:flex-end;gap:10px;margin:7px 0 8px}
+  .pr-daytitle h2{font-size:12px;margin:0;font-weight:900;text-transform:uppercase;letter-spacing:-.02em}
+  .pr-daytitle span{margin-left:auto;font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#555}
+}
+
+
+</style>
+<style id="reportCleanSectionHeads_v1">.sectioncode{display:none!important}</style>
+
+<style id="reportFixedPdfCapture_v1">
+.report-docpreview{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000}
+.report-docpreview .pr-page{
+  box-sizing:border-box!important;
+  width:794px!important;height:1123px!important;min-height:1123px!important;max-height:1123px!important;
+  padding:30px 30px 23px!important;margin:0!important;overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;background:#fff!important;color:#000!important;
+  box-shadow:none!important;
+}
+.report-docpreview .pr-page-body{flex:1!important;min-height:0!important;overflow:hidden!important}
+.report-docpreview .pr-mast{display:flex;align-items:flex-end;gap:12px;border-bottom:1px solid #111;padding-bottom:7px;margin-bottom:9px}
+.report-docpreview .pr-brand b{display:block;font-size:24px;font-weight:900;line-height:.9}
+.report-docpreview .pr-brand small{display:block;font-size:5.8px;font-weight:700;letter-spacing:.22em;margin-top:5px;text-transform:uppercase}
+.report-docpreview .pr-code{margin-left:auto;font-size:5.8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-align:right}
+.report-docpreview .pr-doccode{font-size:6.2px;font-weight:850;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;color:#444}
+.report-docpreview .pr-title{font-size:21px;letter-spacing:-.04em;font-weight:900;line-height:.96;margin:0 0 4px;text-transform:uppercase}
+.report-docpreview .pr-sub{font-size:7.6px;color:#555;margin:0 0 10px}
+.report-docpreview .pr-daytitle{display:flex;align-items:flex-end;gap:10px;margin:7px 0 8px}
+.report-docpreview .pr-daytitle h2{font-size:12px;margin:0;font-weight:900;text-transform:uppercase;letter-spacing:-.02em}
+.report-docpreview .pr-daytitle span{margin-left:auto;font-size:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.report-docpreview .pr-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px 12px;margin-bottom:10px}
+.report-docpreview .pr-meta div{border-bottom:1px solid #bbb;padding-bottom:3px;min-height:21px}
+.report-docpreview .pr-meta b{display:block;font-size:5.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#555}
+.report-docpreview .pr-meta span{display:block;font-size:7.4px;font-weight:700;margin-top:2px}
+.report-docpreview .pr-table{width:100%;min-width:0;border-collapse:collapse}
+.report-docpreview .pr-table th{font-size:5.4px;padding:4px 3px;border-bottom:1px solid #111;text-align:left}
+.report-docpreview .pr-table td{font-size:6.3px;padding:4px 3px;border-bottom:1px solid #d0d0d0;vertical-align:top}
+.report-docpreview .pr-table .pr-notes{white-space:normal;min-width:95px}
+.report-docpreview .pr-page-footer{
+  display:flex;justify-content:space-between;align-items:center;border-top:1px solid #999;
+  padding-top:5px;margin-top:auto;font-size:5.5px;font-weight:400;letter-spacing:.07em;color:#444;text-transform:uppercase;
+  flex:0 0 auto!important;
+}
+.cds-pdf-capture.report-docpreview .pr-page{margin:0!important;box-shadow:none!important}
+.pdf-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto}
+.pdf-ready-actions{display:grid;grid-template-columns:1fr;gap:8px;width:100%}
+.pdf-ready-actions a{text-decoration:none!important;text-align:center}
+.pdf-ready-note{grid-column:1;font-size:.7rem;color:var(--muted);font-weight:650;margin-top:1px}
+.outputcard .pdf-actions .solidbtn,.outputcard .pdf-actions .softbtn{margin-top:0}
+@media(max-width:640px){
+  .pdf-ready-actions{grid-template-columns:1fr}
+  .pdf-ready-note{grid-column:1}
+}
+</style>
+
+<style id="cdsDigitalFamilyUI_v1_report">
+/* ======================================================================
+   CDS DIGITAL FAMILY UI / 01
+   Shared visual rules for ADMIN / 01 and PREP / 01.
+   Component exceptions remain possible where the workflow genuinely differs.
+   ====================================================================== */
+@media screen {
+  :root{
+    --cds-window-border:var(--ink);
+    --cds-control-height:42px;
+    --cds-control-pad:16px;
+    --cds-content-max:1150px;
+    --cds-page-pad-desktop:clamp(22px,3vw,38px);
+  }
+
+  /* Window / card language: one clear black outline in light mode. */
+  .project-card,
+  .card,
+  .quickaction,
+  .workflow-card,
+  .overview-finance,
+  .kpi,
+  .output-card,
+  .outputnotice,
+  .recordcard,
+  .summarybox,
+  .reportstrip,
+  .logcard,
+  .rulecard,
+  .finance-card,
+  .contract-hint,
+  .todaystatus,
+  .helpbox,
+  .guidebox,
+  .project-reminder,
+  .action,
+  .tablewrap,
+  .modalbox,
+  .group,
+  .usebox,
+  .sectionnote,
+  .status-guide,
+  .document-note,
+  .document-card,
+  .documents-note {
+    border-color:var(--cds-window-border)!important;
+    border-width:1px!important;
+  }
+
+  /* Same radius family for substantial windows. */
+  .project-card,
+  .card,
+  .quickaction,
+  .workflow-card,
+  .overview-finance,
+  .kpi,
+  .output-card,
+  .outputnotice,
+  .recordcard,
+  .summarybox,
+  .reportstrip,
+  .logcard,
+  .rulecard,
+  .finance-card,
+  .todaystatus,
+  .helpbox,
+  .guidebox,
+  .project-reminder,
+  .action,
+  .tablewrap,
+  .group,
+  .usebox,
+  .sectionnote,
+  .status-guide,
+  .document-note,
+  .document-card,
+  .documents-note {
+    border-radius:var(--radius)!important;
+  }
+
+  /* Primary/secondary/destructive buttons share one physical system. */
+  .iconbtn,.softbtn,.solidbtn,.dangerbtn{
+    min-height:var(--cds-control-height)!important;
+    height:auto;
+    padding:0 var(--cds-control-pad)!important;
+    border-radius:999px!important;
+    font-size:.78rem!important;
+    font-weight:760!important;
+    line-height:1.1!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .iconbtn{
+    width:var(--cds-control-height)!important;
+    min-width:var(--cds-control-height)!important;
+    padding:0!important;
+  }
+  /* Explicit compact variant only where the UI names it as such. */
+  .smallbtn{
+    min-height:34px!important;
+    padding:0 11px!important;
+    font-size:.7rem!important;
+  }
+  .project-actions button{
+    min-height:var(--cds-control-height)!important;
+    padding:0 var(--cds-control-pad)!important;
+    font-size:.78rem!important;
+  }
+
+  /* Shared page measure / typography. */
+  .content{
+    max-width:var(--cds-content-max)!important;
+    padding-top:var(--cds-page-pad-desktop)!important;
+  }
+  .sectionhead{
+    margin-bottom:20px!important;
+  }
+  .sectionhead h2{
+    font-size:clamp(2.15rem,4.5vw,4.2rem)!important;
+    line-height:.93!important;
+    letter-spacing:-.055em!important;
+    margin:0 0 9px!important;
+  }
+  .sectionhead p{
+    font-size:.95rem!important;
+    line-height:1.45!important;
+    max-width:760px!important;
+  }
+
+  /* Shared landing-page scale. */
+  .launch{
+    padding:clamp(38px,5vw,66px) 0!important;
+  }
+  .launch-title{
+    font-size:clamp(3rem,6.4vw,6.25rem)!important;
+    line-height:.82!important;
+    letter-spacing:-.065em!important;
+    max-width:850px!important;
+  }
+  .launch .lede{
+    font-size:1rem!important;
+    line-height:1.5!important;
+    max-width:790px!important;
+    margin:20px 0 22px!important;
+  }
+
+  /* Utility popup/menu frames follow the same strong-outline logic. */
+  .mobile-section-button,.mobile-section-menu{
+    border-color:var(--cds-window-border)!important;
+  }
+
+  @media(max-width:640px){
+    :root{
+      --cds-control-height:40px;
+      --cds-control-pad:10px;
+    }
+    .shell,.topinner,.content,.dash,.mobile-nav{
+      padding-left:16px!important;
+      padding-right:16px!important;
+    }
+    .content{
+      padding-top:20px!important;
+    }
+    .sectionhead{
+      margin-bottom:16px!important;
+    }
+    .sectionhead h2{
+      font-size:2.35rem!important;
+      line-height:.94!important;
+      margin-bottom:8px!important;
+    }
+    .sectionhead p{
+      font-size:.88rem!important;
+    }
+    .launch{
+      padding:24px 0 42px!important;
+    }
+    .launch-title{
+      font-size:clamp(3rem,14vw,4.2rem)!important;
+      line-height:.8!important;
+    }
+    .launch .lede{
+      font-size:.98rem!important;
+      margin:17px 0 18px!important;
+    }
+    .project-actions button{
+      min-height:var(--cds-control-height)!important;
+      padding:0 var(--cds-control-pad)!important;
+      font-size:.72rem!important;
+    }
+  }
+}
+</style>
+<style id="cdsFamilyShellLock_v1_report">
+@media screen {
+  /*
+    CDS DIGITAL FAMILY SHELL
+    These values are intentionally identical in ADMIN / 01 and PREP / 01.
+    Product-specific interfaces may differ inside the content area, but the
+    application frame, typography scale, page measure, cards and controls do not.
+  */
+  :root{
+    --cds-shell-max:1440px;
+    --cds-launch-max:1120px;
+    --cds-content-max:1150px;
+    --cds-sidebar-width:260px;
+    --cds-header-height:66px;
+    --cds-shell-gutter:18px;
+    --cds-content-pad:clamp(22px,3vw,38px);
+    --cds-control-height:42px;
+    --cds-control-pad:16px;
+  }
+
+  html,body{
+    font-size:16px!important;
+  }
+
+  /* Global header */
+  .topbar{
+    min-height:var(--cds-header-height)!important;
+  }
+  .topinner{
+    height:var(--cds-header-height)!important;
+    max-width:var(--cds-shell-max)!important;
+    padding-left:var(--cds-shell-gutter)!important;
+    padding-right:var(--cds-shell-gutter)!important;
+    gap:12px!important;
+  }
+  .productbrand{gap:11px!important}
+  .appmark-small{
+    width:38px!important;
+    height:38px!important;
+    border-radius:9px!important;
+    font-size:.7rem!important;
+  }
+  .productbrandtext b{
+    font-size:.82rem!important;
+    line-height:1.08!important;
+    letter-spacing:.11em!important;
+  }
+  .savechip{font-size:.65rem!important}
+
+  /* Landing page: exact same measure, type scale and rhythm. */
+  #launchView{
+    width:100%!important;
+    max-width:var(--cds-launch-max)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding-left:34px!important;
+    padding-right:34px!important;
+  }
+  #launchView.launch{
+    padding-top:clamp(38px,5vw,66px)!important;
+    padding-bottom:42px!important;
+  }
+  #launchView .launch-title{
+    font-size:clamp(3rem,6.4vw,6.25rem)!important;
+    line-height:.82!important;
+    letter-spacing:-.065em!important;
+    max-width:850px!important;
+    margin:0!important;
+  }
+  #launchView .launch-title span{display:block!important}
+  #launchView .lede{
+    font-size:1rem!important;
+    line-height:1.5!important;
+    max-width:790px!important;
+    margin:20px 0 22px!important;
+  }
+  #launchView .launch-actions{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:10px!important;
+    margin:20px 0!important;
+  }
+  #launchView .project-list{
+    width:100%!important;
+    max-width:none!important;
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr))!important;
+    gap:12px!important;
+    margin-top:22px!important;
+    align-items:stretch!important;
+  }
+  #launchView .project-card{
+    display:grid!important;
+    grid-template-rows:1fr auto!important;
+    min-height:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  #launchView .project-open{
+    display:block!important;
+    width:100%!important;
+    min-height:0!important;
+    padding:18px!important;
+  }
+  #launchView .project-card strong{
+    font-size:1.08rem!important;
+    margin-bottom:5px!important;
+  }
+  #launchView .project-card small{font-size:.8rem!important}
+  #launchView .project-card .meta{
+    margin-top:16px!important;
+    font-size:.7rem!important;
+  }
+  #launchView .project-actions{
+    gap:7px!important;
+    padding:10px 12px!important;
+  }
+  #launchView .project-actions button{
+    min-height:var(--cds-control-height)!important;
+    padding:0 var(--cds-control-pad)!important;
+    font-size:.78rem!important;
+  }
+  #launchView .privacy{
+    max-width:none!important;
+    margin-top:45px!important;
+    padding-top:22px!important;
+    font-size:.84rem!important;
+  }
+
+  /* Interior application frame */
+  .workspace{
+    grid-template-columns:var(--cds-sidebar-width) minmax(0,1fr)!important;
+    min-height:calc(100vh - var(--cds-header-height))!important;
+  }
+  .sidebar{
+    top:var(--cds-header-height)!important;
+    height:calc(100vh - var(--cds-header-height))!important;
+    padding:18px 14px 30px!important;
+  }
+  .main{min-width:0!important}
+  .dash{
+    border-bottom:1px solid var(--line)!important;
+    padding:18px 22px!important;
+    background:var(--paper)!important;
+  }
+  .dashrow{
+    display:flex!important;
+    align-items:center!important;
+    gap:10px!important;
+    flex-wrap:wrap!important;
+  }
+  .dashproject{
+    margin-right:auto!important;
+    font-size:.95rem!important;
+    font-weight:820!important;
+  }
+  .content{
+    width:100%!important;
+    max-width:var(--cds-content-max)!important;
+    padding:var(--cds-content-pad)!important;
+    padding-top:var(--cds-content-pad)!important;
+  }
+
+  /* Interior page typography */
+  .sectionhead{
+    margin-bottom:20px!important;
+  }
+  .sectionhead h2,
+  .chapter-head h2{
+    font-size:clamp(2.15rem,4.5vw,4.2rem)!important;
+    line-height:.93!important;
+    letter-spacing:-.055em!important;
+    margin:0 0 9px!important;
+  }
+  .sectionhead p,
+  .chapter-head p{
+    font-size:.95rem!important;
+    line-height:1.45!important;
+    max-width:760px!important;
+  }
+
+  /* Universal controls */
+  .iconbtn,.softbtn,.solidbtn,.dangerbtn{
+    min-height:var(--cds-control-height)!important;
+    padding:0 var(--cds-control-pad)!important;
+    border-radius:999px!important;
+    font-size:.78rem!important;
+    font-weight:760!important;
+    line-height:1.1!important;
+  }
+  .iconbtn{
+    width:var(--cds-control-height)!important;
+    min-width:var(--cds-control-height)!important;
+    padding:0!important;
+  }
+
+  /* Shared substantial-window geometry. */
+  .project-card,.card,.quickaction,.workflow-card,.overview-finance,.kpi,
+  .output-card,.recordcard,.summarybox,.reportstrip,.logcard,.rulecard,
+  .finance-card,.todaystatus,.helpbox,.guidebox,.action,.tablewrap,.modalbox,
+  .group,.usebox,.sectionnote,.status-guide,.document-note,.document-card,
+  .documents-note{
+    border-radius:var(--radius)!important;
+  }
+
+  @media(max-width:1000px){
+    .workspace{grid-template-columns:1fr!important}
+    .sidebar{display:none!important}
+  }
+
+  @media(max-width:640px){
+    :root{
+      --cds-control-height:40px;
+      --cds-control-pad:10px;
+      --cds-shell-gutter:16px;
+    }
+    html,body{font-size:16px!important}
+    .topinner{
+      height:var(--cds-header-height)!important;
+      padding-left:var(--cds-shell-gutter)!important;
+      padding-right:var(--cds-shell-gutter)!important;
+    }
+    #launchView{
+      max-width:none!important;
+      padding-left:var(--cds-shell-gutter)!important;
+      padding-right:var(--cds-shell-gutter)!important;
+    }
+    #launchView.launch{
+      padding-top:24px!important;
+      padding-bottom:42px!important;
+    }
+    #launchView .launch-title{
+      font-size:clamp(3rem,14vw,4.2rem)!important;
+      line-height:.8!important;
+    }
+    #launchView .lede{
+      font-size:.98rem!important;
+      margin:17px 0 18px!important;
+    }
+    #launchView .project-list{
+      grid-template-columns:1fr!important;
+      gap:10px!important;
+    }
+    #launchView .project-actions button{
+      min-height:var(--cds-control-height)!important;
+      padding:0 var(--cds-control-pad)!important;
+      font-size:.72rem!important;
+    }
+    .mobile-nav,.content,.dash{
+      padding-left:var(--cds-shell-gutter)!important;
+      padding-right:var(--cds-shell-gutter)!important;
+    }
+    .dash{
+      padding-top:10px!important;
+      padding-bottom:10px!important;
+    }
+    .content{
+      max-width:none!important;
+      padding-top:20px!important;
+      padding-bottom:28px!important;
+    }
+    .sectionhead,.chapter-head{margin-bottom:16px!important}
+    .sectionhead h2,.chapter-head h2{
+      font-size:2.35rem!important;
+      line-height:.94!important;
+      margin-bottom:8px!important;
+    }
+    .sectionhead p,.chapter-head p{font-size:.88rem!important}
+  }
+}
+</style>
+<style id="cdsSharedInfoHeader_v1_report">
+@media screen {
+  .productbrandtext{min-width:0!important}
+  .productbrandtext b{
+    display:flex!important;
+    align-items:baseline!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  .productbrandtext b .productname,
+  .productbrandtext b .productversion{
+    display:inline!important;
+    margin:0!important;
+    font-size:inherit!important;
+    line-height:inherit!important;
+    letter-spacing:inherit!important;
+    text-transform:inherit!important;
+    color:inherit!important;
+  }
+  .app-info-panel strong{color:var(--ink)}
+  .app-info-panel p+p{margin-top:8px}
+}
+@media screen and (max-width:640px){
+  .topinner{gap:8px!important}
+  .productbrand{
+    gap:9px!important;
+    min-width:0!important;
+    margin-right:auto!important;
+  }
+  .productbrandtext b{
+    font-size:.82rem!important;
+    line-height:1.08!important;
+    letter-spacing:.11em!important;
+  }
+  .productversion{display:none!important}
+  .savechip{
+    min-width:0!important;
+    flex:0 0 auto!important;
+    font-size:.58rem!important;
+    white-space:nowrap!important;
+    text-align:right!important;
+  }
+  .langswitch,.iconbtn{flex:0 0 auto!important}
+}
+</style>
+
+<style id="reportMobileHierarchyLock_v1">
+@media screen and (max-width:1000px){
+  .mobile-nav{
+    display:flex!important;
+    position:sticky!important;
+    top:66px!important;
+    z-index:36!important;
+    overflow:visible!important;
+  }
+  .dash{
+    position:static!important;
+  }
+}
+@media screen and (max-width:640px){
+  .mobile-nav{top:66px!important}
+}
+/* REPORT-specific semantic flag controls remain intentionally distinct:
+   neutral buttons with subtle semantic labels until selected. */
+</style>
+
+
+<style id="cdsInfoModalStandard_v1">
+/* CDS DIGITAL FAMILY — ABOUT / DATA & BACKUPS STANDARD */
+#infoModal .modalbox{
+  width:min(720px,100%)!important;
+  max-height:90vh!important;
+  overflow:auto!important;
+  background:var(--paper)!important;
+  border:1px solid var(--ink)!important;
+  border-radius:18px!important;
+  padding:22px!important;
+  box-shadow:0 24px 80px rgba(0,0,0,.22)!important;
+}
+#infoModal .modalhead{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin-bottom:18px!important;
+}
+#infoModal .modalhead h3{
+  margin:0!important;
+  margin-right:auto!important;
+  font-size:1.17rem!important;
+  line-height:1.2!important;
+  font-weight:850!important;
+  letter-spacing:-.015em!important;
+  color:var(--ink)!important;
+}
+#infoModal .app-info-panel h3{
+  margin:18px 0 5px!important;
+  font-size:.72rem!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+  color:var(--ink)!important;
+}
+#infoModal .app-info-panel h3:first-child{margin-top:0!important}
+#infoModal .app-info-panel p{
+  margin:0!important;
+  font-size:.82rem!important;
+  line-height:1.45!important;
+  color:var(--muted)!important;
+}
+#infoModal .app-info-panel p+p{margin-top:8px!important}
+#infoModal .app-info-panel strong{color:var(--ink)!important}
+#infoModal .versionline{
+  border-top:1px solid var(--line)!important;
+  margin-top:20px!important;
+  padding-top:12px!important;
+  font-size:.68rem!important;
+  color:var(--muted)!important;
+  letter-spacing:.06em!important;
+}
+@media(max-width:640px){
+  #infoModal{padding:14px!important}
+  #infoModal .modalbox{padding:18px!important}
+  #infoModal .modalhead h3{font-size:1.05rem!important}
+}
+</style>
+
+
+<style id="cdsFamilyParityLock_v1">
+@media screen {
+  /* Shared navigation geometry: exact ADMIN / PREP values. */
+  .navsection{
+    gap:9px!important;
+    border:0!important;
+    padding:9px!important;
+    margin:2px 0!important;
+  }
+  .navsection.active{border:0!important}
+
+  .mobile-nav label{
+    font-size:.62rem!important;
+    font-weight:850!important;
+    letter-spacing:.1em!important;
+    text-transform:uppercase!important;
+    color:var(--muted)!important;
+  }
+  .mobile-section-button{
+    min-height:40px!important;
+    border:1px solid var(--ink)!important;
+    border-radius:10px!important;
+    padding:8px 10px!important;
+    background:var(--paper)!important;
+  }
+  .mobile-section-menu{
+    border:1px solid var(--ink)!important;
+    border-radius:12px!important;
+    padding:5px!important;
+  }
+  .mobile-section-row{
+    border:0!important;
+    border-radius:8px!important;
+    padding:10px!important;
+  }
+  .mobile-section-row:hover,
+  .mobile-section-row.active{
+    border:0!important;
+    background:var(--paper2)!important;
+  }
+
+  /* Shared form-control geometry. */
+  .field input,
+  .field select,
+  .field textarea{
+    width:100%!important;
+    border:1px solid var(--line)!important;
+    border-radius:9px!important;
+    background:var(--paper)!important;
+    color:var(--ink)!important;
+    padding:10px 12px!important;
+    outline:none!important;
+    box-shadow:none!important;
+  }
+  .field input:not([type="checkbox"]),
+  .field select{
+    height:42px!important;
+    min-height:42px!important;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus{
+    border-color:var(--ink)!important;
+    box-shadow:none!important;
+  }
+
+  /* Shared general modal geometry = ADMIN reference. */
+  .modalbox{
+    width:min(720px,100%)!important;
+    max-height:90vh!important;
+    overflow:auto!important;
+    border:1px solid var(--ink)!important;
+    border-radius:18px!important;
+    padding:22px!important;
+    box-shadow:0 24px 80px rgba(0,0,0,.22)!important;
+  }
+  .modalhead{
+    gap:10px!important;
+    margin-bottom:18px!important;
+  }
+  .modalhead h2,
+  .modalhead h3{
+    margin:0!important;
+    margin-right:auto!important;
+    font-size:1.17rem!important;
+    line-height:1.2!important;
+    font-weight:850!important;
+    letter-spacing:-.015em!important;
+  }
+}
+@media screen and (max-width:640px){
+  .field input:not([type="checkbox"]),
+  .field select{
+    height:42px!important;
+    min-height:42px!important;
+    font-size:16px!important;
+  }
+  .mobile-section-button{
+    min-height:40px!important;
+    padding:8px 10px!important;
+  }
+  .mobile-nav label{font-size:.62rem!important}
+}
+</style>
+
+
+<style id="cdsPickerStandard_v1">
+.cds-picker{position:relative;width:100%}
+.cds-picker-button{
+  width:100%;min-height:42px;border:1px solid var(--ink);border-radius:9px;
+  background:var(--paper);color:var(--ink);display:flex;align-items:center;
+  justify-content:space-between;gap:12px;padding:9px 12px;text-align:left;
+  font:inherit;font-size:.82rem;font-weight:760
+}
+.cds-picker-button:focus{outline:none;box-shadow:none}
+.cds-picker-value{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cds-picker-chevron{flex:0 0 auto;color:var(--muted);font-size:.9rem}
+.cds-picker-menu{
+  position:absolute;left:0;right:0;top:calc(100% + 7px);z-index:96;
+  border:1px solid var(--ink);border-radius:12px;background:var(--paper);
+  box-shadow:0 15px 35px rgba(0,0,0,.13);padding:5px;
+  max-height:min(60vh,420px);overflow:auto
+}
+.cds-picker-row{
+  width:100%;border:0;background:transparent;color:var(--ink);
+  border-radius:8px;display:flex;align-items:center;gap:10px;
+  text-align:left;padding:10px;font:inherit;font-size:.8rem
+}
+.cds-picker-row:hover,.cds-picker-row.active{background:var(--paper2)}
+.cds-picker-row.active{font-weight:850}
+</style>
+
+
+<style id="cdsSmartInput_v1">
+.smart-field{position:relative;width:100%}
+.smart-field input{padding-right:42px!important}
+.smart-trigger{
+  position:absolute;right:1px;top:1px;bottom:1px;width:38px;border:0;
+  border-left:1px solid var(--line);border-radius:0 8px 8px 0;
+  background:transparent;color:var(--muted);display:flex;align-items:center;
+  justify-content:center;font:inherit;font-size:.9rem
+}
+.smart-trigger:hover{background:var(--paper2);color:var(--ink)}
+.smart-menu{
+  position:absolute;left:0;right:0;top:calc(100% + 7px);z-index:97;
+  border:1px solid var(--ink);border-radius:12px;background:var(--paper);
+  box-shadow:0 15px 35px rgba(0,0,0,.13);padding:5px;
+  max-height:min(52vh,360px);overflow:auto
+}
+.smart-row{
+  width:100%;border:0;background:transparent;color:var(--ink);
+  border-radius:8px;text-align:left;padding:10px;font:inherit;font-size:.8rem
+}
+.smart-row:hover,.smart-row.active{background:var(--paper2)}
+.smart-row.active{font-weight:850}
+</style>
+
+
+<style id="cdsFlagTokenStandard_v1">
+/* SCREEN REPORT — semantic status lives in the FLAGS column */
+.flagcell{white-space:nowrap;padding-right:12px!important}
+.report-flag-token{
+  display:inline-flex;align-items:center;justify-content:center;
+  box-sizing:border-box;height:20px;min-height:20px;
+  padding:0 6px;margin:0 8px 3px 0;
+  border:1px solid var(--line);border-radius:2px;
+  font-size:.64rem;font-weight:900;line-height:1;
+  letter-spacing:.015em;background:transparent;color:var(--ink);
+  vertical-align:middle
+}
+.report-flag-token.flag-preferred{border-color:#22835b;color:#22835b}
+.report-flag-token.flag-hold,
+.report-flag-token.flag-fs{border-color:#d28a00;color:#c57d00}
+.report-flag-token.flag-ng{border-color:#b23a32;color:#b23a32}
+.report-flag-token.flag-mos,
+.report-flag-token.flag-vfx{border-color:var(--line);color:var(--muted)}
+
+/* GENERATED PDF — same logic, more restrained */
+.report-docpreview .pdf-flag-token{
+  display:inline-flex;align-items:center;justify-content:center;
+  box-sizing:border-box;height:10px;min-height:10px;
+  padding:0 3px;margin:0 2px 1px 0;
+  border:1px solid #999;border-radius:2px;
+  font-size:5.4px;font-weight:900;line-height:1;
+  color:#111;background:#fff;vertical-align:middle;
+}
+.report-docpreview .pdf-flag-token.flag-preferred{border-color:#22835b;color:#22835b}
+.report-docpreview .pdf-flag-token.flag-hold,
+.report-docpreview .pdf-flag-token.flag-fs{border-color:#d28a00;color:#b97800}
+.report-docpreview .pdf-flag-token.flag-ng{border-color:#b23a32;color:#b23a32}
+.report-docpreview .pdf-flag-token.flag-mos,
+.report-docpreview .pdf-flag-token.flag-vfx{border-color:#999;color:#555}
+</style>
+
+<style id="reportTableScroll_v1">
+@media(max-width:640px){
+  .tablewrap{max-height:340px}
+}
+</style>
+
+<style id="reportPdfTableIsolation_v1">
+.report-docpreview .pr-table th{
+  position:static!important;
+  top:auto!important;
+  z-index:auto!important;
+  background:#fff!important;
+  color:#444!important;
+  border-bottom:1px solid #111!important;
+}
+.report-docpreview .pr-table td{
+  background:#fff!important;
+  color:#111!important;
+}
+</style>
+
+
+<style id="reportDocumentsParity_v1">
+/* Documents follows the same card + scope language as PREP / 01. */
+.documents-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.document-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:18px;display:flex;flex-direction:column;gap:15px;min-height:230px}
+.document-card small{font-size:.62rem;font-weight:850;letter-spacing:.12em;color:var(--muted)}
+.document-card h3{font-size:1.25rem;margin:5px 0 4px}
+.document-card p{color:var(--muted);margin:0;line-height:1.45}
+.document-format{font-size:.63rem;font-weight:800;letter-spacing:.08em;color:var(--muted);margin-top:auto}
+.document-card button,.document-card .solidbtn,.document-card .softbtn{align-self:flex-start}
+.documents-note{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;background:var(--card);display:flex;gap:12px;align-items:baseline}
+.documents-note strong{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em}
+.documents-note span{color:var(--muted);font-size:.76rem}
+
+.document-card-report{grid-column:1/-1;min-height:0}
+.report-options{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:16px 20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:15px 0}
+.report-option-group{display:flex;flex-direction:column;gap:8px}
+.report-option-label{font-size:.61rem;font-weight:850;letter-spacing:.12em;color:var(--muted)}
+.report-choice{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:var(--paper);cursor:pointer}
+.report-choice input{margin:3px 0 0;accent-color:var(--ink)}
+.report-choice span{min-width:0}
+.report-choice b{display:block;font-size:.76rem}
+.report-choice small{display:block;color:var(--muted);font-size:.68rem;line-height:1.35;margin-top:2px}
+.report-selected{opacity:.42;pointer-events:none;transition:opacity .15s}
+.report-selected.active{opacity:1;pointer-events:auto}
+.report-day-scroll{max-height:285px;overflow:auto;padding-right:4px;-webkit-overflow-scrolling:touch}
+.report-chapter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}
+.report-chapter{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:8px 9px;background:var(--paper);font-size:.7rem;cursor:pointer}
+.report-chapter input{accent-color:var(--ink)}
+.report-chapter span{display:flex;gap:7px;align-items:baseline;min-width:0}
+.report-chapter b{font-size:.61rem;color:var(--muted);letter-spacing:.08em;flex:0 0 auto}
+
+/* Preview deliberately mirrors PREP / 01 and ADMIN / 01. */
+#reportPreviewModal{
+  position:fixed!important;inset:0!important;background:rgba(0,0,0,.42)!important;
+  display:grid!important;place-items:center!important;padding:18px!important;z-index:120!important
+}
+#reportPreviewModal.hidden{display:none!important}
+#reportPreviewModal .outputmodal{
+  width:min(1040px,100%)!important;max-height:90vh!important;overflow:auto!important;padding:22px!important
+}
+#reportPreviewModal .modalhead{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:18px!important}
+#reportPreviewModal .modalhead h2{margin:0!important;margin-right:auto!important;font-size:1.17rem!important;line-height:1.2!important}
+.report-docpreviewwrap{margin-top:14px;border:1px solid var(--line);border-radius:12px;background:#d7d5cf;padding:16px;overflow:hidden}
+.report-docpreviewstage{position:relative;margin:0 auto}
+.report-preview{background:transparent!important;color:#111!important;width:794px!important;max-width:none!important;margin:0!important;transform-origin:0 0}
+.report-preview .pr-page{margin:0 0 16px!important;box-shadow:0 8px 35px rgba(0,0,0,.13)!important}
+.report-preview .pr-page:last-child{margin-bottom:0!important}
+.report-preview-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.report-preview-actions .solidbtn{text-decoration:none}
+.report-preview-note{font-size:.7rem;color:var(--muted);font-weight:650}
+
+@media(max-width:640px){
+  .documents-grid{grid-template-columns:1fr}
+  .document-card{min-height:0}
+  .documents-note{display:block}
+  .documents-note span{display:block;margin-top:5px}
+  .report-options{grid-template-columns:1fr}
+  .report-chapter-grid{grid-template-columns:1fr}
+  .document-card-report{grid-column:auto}
+  .report-docpreviewwrap{padding:16px}
+}
+</style>
+
+
+<style id="reportPreviewStickyHeader_v1">
+#reportPreviewModal .modalhead{
+  position:sticky!important;
+  top:-22px!important;
+  z-index:8!important;
+  background:var(--paper)!important;
+  padding:4px 0 12px!important;
+  margin-bottom:18px!important;
+}
+</style>
+
+
+<style id="reportCompactContinuation_v1">
+.report-docpreview .pr-conthead{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  border-bottom:1px solid #111;
+  padding-bottom:7px;
+  margin-bottom:8px;
+  color:#111;
+}
+.report-docpreview .pr-conthead > div{
+  min-width:0;
+}
+.report-docpreview .pr-conthead b{
+  display:block;
+  font-size:6.1px;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.report-docpreview .pr-conthead span{
+  display:block;
+  margin-top:2px;
+  font-size:6px;
+  font-weight:650;
+  color:#555;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.report-docpreview .pr-contmeta{
+  text-align:right;
+  margin-left:auto;
+}
+.report-docpreview .pr-contmeta span{
+  font-weight:850;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+</style>
+
+</head>
+<body>
+<div class="topbar"><div class="topinner">
+  <div class="productbrand"><div class="appmark appmark-small" aria-hidden="true">CDS</div><div class="productbrandtext"><b><span class="productname">REPORT / 01</span></b></div></div>
+  <div class="langswitch" role="group" aria-label="Language"><button class="langchoice" data-lang="en" type="button">EN</button><button class="langchoice" data-lang="es" type="button">ES</button><button class="langchoice" data-lang="fr" type="button">FR</button></div>
+  <button class="iconbtn" id="appInfoBtn" aria-label="About, data and backups">?</button><button class="iconbtn" id="themeBtn" aria-label="Toggle theme">◐</button>
+</div></div>
+
+<main id="launchView" class="shell launch">
+  <h1 class="launch-title"><span>Interactive</span><span>Camera</span><span>Report</span></h1>
+  <p class="lede" data-t="launch_lede">A fast, local-first camera report built around persistent camera settings and minimal on-set data entry.</p>
+  <div class="launch-actions"><button class="solidbtn" id="newProjectBtn" data-t="New project">New project</button><button class="softbtn" id="importBtn" data-t="Import project">Import project</button><input id="fileImport" type="file" accept="application/json,.json"></div>
+  <div id="projectList" class="project-list"></div>
+  <div class="privacy"><strong data-t="Local-first by design.">Local-first by design.</strong> <span data-t="privacy_copy">Camera report data is stored in this browser, not sent to a server. Export a project backup before changing devices or clearing browser data.</span></div>
+</main>
+
+<div id="appView" class="hidden">
+  <div class="workspace">
+    <div class="mobile-nav"><label data-t="Section">Section</label><div class="mobile-section-control"><button id="mobileSectionButton" class="mobile-section-button" type="button" aria-haspopup="true" aria-expanded="false"></button><div id="mobileSectionMenu" class="mobile-section-menu hidden" role="menu"></div></div></div>
+    <aside class="sidebar"><div class="sideproject"><strong id="sideProjectName"></strong><small id="sideProjectMeta"></small></div><div id="sectionNav"></div></aside>
+    <section class="main"><div class="dash"><div class="dashrow"><div class="dashproject" id="dashProject"></div><button class="softbtn" id="backProjects" data-t="Projects">Projects</button></div></div><div class="content" id="sectionContent"></div></section>
+  </div>
+</div>
+
+<div class="modal hidden" id="projectModal"><div class="modalbox"><div class="modalhead"><h2 data-t="Create project">Create project</h2><button class="iconbtn modalClose" type="button">×</button></div><div class="fields">
+  <div class="field"><label data-t="Project title">Project title</label><input id="newProjectTitle"></div><div class="field"><label data-t="Production company">Production company</label><input id="newProduction"></div>
+  <div class="field"><label data-t="Camera ID">Camera ID</label><input id="newCameraId" value="A CAM"></div><div class="field"><label data-t="Shoot date">Shoot date</label><input id="newShootDate" type="date"></div>
+</div><div class="launch-actions"><button class="solidbtn" id="createProjectBtn" data-t="Create project">Create project</button><button class="softbtn modalClose" type="button" data-t="Cancel">Cancel</button></div></div></div>
+
+
+<div class="modal hidden" id="dayModal"><div class="modalbox"><div class="modalhead"><h2 id="dayModalTitle">New shoot day</h2><button class="iconbtn modalClose" type="button">×</button></div><div class="fields">
+  <div class="field"><label id="dayNumberLabel">Shoot day</label><input id="newDayNumber" type="number" min="1" value="2"></div><div class="field"><label id="dayDateLabel">Date</label><input id="newDayDate" type="date"></div>
+</div><label class="checkrow"><input id="carryDayState" type="checkbox" checked><span id="carryDayLabel">Carry previous camera state</span></label><div class="launch-actions"><button class="solidbtn" id="createDayBtn" type="button">Create day</button><button class="softbtn modalClose" type="button" id="cancelDayBtn">Cancel</button></div></div></div>
+
+<div class="modal hidden" id="sceneModal"><div class="modalbox"><div class="modalhead"><h2 id="sceneModalTitle">New scene / shot</h2><button class="iconbtn modalClose" type="button">×</button></div>
+<p id="sceneModalHelp" style="margin:-4px 0 18px;color:var(--muted);font-size:.84rem;line-height:1.45">Enter the next scene or shot. Take resets to 1. Card, clip and camera state stay unchanged.</p>
+<div class="fields"><label class="field"><span id="sceneModalLabel">Scene / Shot</span><input id="newSceneInput" type="text" autocomplete="off" placeholder="42C / INSERT 3"></label></div>
+<div class="launch-actions"><button class="solidbtn" id="confirmSceneBtn" type="button">Set scene</button><button class="softbtn modalClose" type="button" id="cancelSceneBtn">Cancel</button></div></div></div>
+
+<div class="modal hidden" id="infoModal"><div class="modalbox"><div class="modalhead"><h3 data-t="About / Data & Backups">About / Data & Backups</h3><button class="iconbtn modalClose" type="button">×</button></div><div id="infoBody"></div></div></div>
+<div class="modal hidden" id="reportPreviewModal"><div class="modalbox outputmodal"><div class="modalhead"><h2>Camera Report</h2><button class="iconbtn" id="reportPreviewClose" type="button">×</button></div><div id="reportPreviewBody"></div></div></div>
+<div class="toast hidden" id="toast"></div>
+<div id="printReport" aria-hidden="true"></div>
+
+<script>
+(()=>{
+'use strict';
+const APP_VERSION='v1.0.0';
+const STORE_KEY='cds_report_01_projects_v1';
+const LANG_KEY='cds_report_01_lang_v1';
+const THEME_KEY='cds_report_01_theme_v1_0_0';
+const BACKUP_FORMAT='CDS_INTERACTIVE_CAMERA_REPORT';
+const BACKUP_VERSION=3;
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+let lang=localStorage.getItem(LANG_KEY)||'en';
+let projects=loadProjects();
+let currentId=null, section='shoot', recording=false, recordStart=0, timerId=null, pendingDuration=0, pendingFlags=new Set(), reportScope='current';
+const I18N={
+en:{
+'Interactive':'Interactive','Camera':'Camera','Report':'Report','launch_lede':'A fast, local-first camera report built around persistent camera settings and minimal on-set data entry.','New project':'New project','Import project':'Import project','Local-first by design.':'Local-first by design.','privacy_copy':'Camera report data is stored in this browser, not sent to a server. Export a project backup before changing devices or clearing browser data.','Projects':'Projects','Create project':'Create project','Project title':'Project title','Production company':'Production company','Camera ID':'Camera ID','Shoot date':'Shoot date','Cancel':'Cancel','About / Data & Backups':'About / Data & Backups','Open':'Open','Duplicate':'Duplicate','Delete':'Delete','No projects yet.':'No projects yet.','Create a project to begin.':'Create a project to begin.','Untitled Report':'Untitled Report','Copy':'Copy','Shoot':'Shoot','Fast logging':'Fast logging','Setup':'Setup','Project & camera':'Project & camera','Daily Report':'Daily Report','All logged takes':'All logged takes','Documents':'Documents','Export & backup':'Export & backup','shoot_deck':'Log the take first. Everything that has not changed stays current automatically.','setup_deck':'Set the project, camera and technical defaults used by the report.','report_deck':'A complete row-by-row record. Persistent settings are written into every saved take.','documents_deck':'Generate a production-facing report, spreadsheet-ready data or a restorable project backup.','Takes':'Takes','Clips':'Clips','Recorded':'Recorded','Current take':'Current take','Scene / Shot':'Scene / Shot','Take':'Take','Roll / Card':'Roll / Card','Clip':'Clip','Current camera state · persists until changed':'Current camera state · persists until changed','Exposure / image state':'Exposure / image state','Optional duration timer':'Optional duration timer','Timer optional — save the take at any time.':'Timer optional — save the take at any time.','Duration (optional)':'Duration (optional)','SAVE TAKE + NEXT':'SAVE TAKE + NEXT','Lens':'Lens','T-stop':'T-stop','Filter':'Filter','FPS':'FPS','ROLL':'ROLL','CUT':'CUT','RECORDING':'RECORDING','Take result / flags':'Take result / flags','Preferred':'Preferred','Hold':'Hold','Notes':'Notes','SAVE + NEXT TAKE':'SAVE + NEXT TAKE','+ NEW CARD':'+ NEW CARD','NEW SCENE / TAKE 1':'NEW SCENE / TAKE 1','Latest entries':'Latest entries','No takes logged yet.':'No takes logged yet.','Duration':'Duration','Flags':'Flags','Clear':'Clear','Project information':'Project information','Technical setup':'Technical setup','Project':'Project','Production':'Production','Date':'Date','Shoot day':'Shoot day','Camera / Serial':'Camera / Serial','Format / Codec':'Format / Codec','Resolution':'Resolution','Base FPS':'Base FPS','Shutter':'Shutter','EI / ISO':'EI / ISO','White Balance':'White Balance','LUT / Look':'LUT / Look','Lens Set':'Lens Set','Timecode':'Timecode','Sensor / Mode':'Sensor / Mode','Aspect / Squeeze':'Aspect / Squeeze','Save setup':'Save setup','Report entries':'Report entries','Export CSV':'Export CSV','Print / Save PDF':'Print / Save PDF','Project Backup':'Project Backup','Export backup':'Export backup','Production Report':'Production Report','CSV Data':'CSV Data','Structured camera report data for spreadsheet or post workflow.':'Structured camera report data for spreadsheet or post workflow. Uses the selected document scope.','A4 camera report using the CDS working-document system.':'A4 camera report using the CDS working-document system. Uses the selected document scope.','Restorable local-first project backup for another browser or device.':'Restorable local-first project backup for another browser or device.','About':'About','about_copy':'Interactive Camera Report is designed to reduce on-set typing. Camera settings persist until changed, while every saved take keeps a complete technical record.','Data':'Data','data_copy':'Project data is stored locally in this browser and is not sent to a server. Autosave is silent. Export a JSON project backup for important jobs and before changing devices.','Workflow':'Workflow','workflow_copy':'Set the current camera state. Use ROLL / CUT when you want automatic clip duration, or skip the timer and save the take directly. Flags, notes and duration are optional.','Flag legend':'Flag legend','flags_copy':'○ preferred · H hold · NG no good · FS false start · MOS no sync sound · VFX visual effects','Offline':'Offline','offline_copy':'This prototype is a self-contained local-first HTML file. Installable-app packaging can be applied once the reporting workflow is locked.','Imported project':'Imported project','Invalid backup file.':'Invalid backup file.','Project imported.':'Project imported.','Project created.':'Project created.','Project duplicated.':'Project duplicated.','Project deleted.':'Project deleted.','Setup saved.':'Setup saved.','Take saved.':'Take saved.','Nothing to export yet.':'Nothing to export yet.','New card ready.':'New card ready.','New scene ready.':'New scene ready.','Delete this project?':'Delete this project?','No production set':'No production set','Last updated':'Last updated','Camera report':'Camera report','PAGE':'PAGE'
+},
+es:{
+'Interactive':'Interactive','Camera':'Cámara','Report':'Reporte','launch_lede':'Un reporte de cámara rápido y local-first, basado en ajustes persistentes y la mínima entrada de datos en rodaje.','New project':'Nuevo proyecto','Import project':'Importar proyecto','Local-first by design.':'Local-first por diseño.','privacy_copy':'Los datos del reporte se guardan en este navegador y no se envían a un servidor. Exporta un respaldo antes de cambiar de dispositivo o borrar los datos del navegador.','Projects':'Proyectos','Create project':'Crear proyecto','Project title':'Título del proyecto','Production company':'Productora','Camera ID':'ID de cámara','Shoot date':'Fecha de rodaje','Cancel':'Cancelar','About / Data & Backups':'Acerca de / Datos y respaldos','Open':'Abrir','Duplicate':'Duplicar','Delete':'Eliminar','No projects yet.':'Todavía no hay proyectos.','Create a project to begin.':'Crea un proyecto para comenzar.','Untitled Report':'Reporte sin título','Copy':'Copia','Shoot':'Rodaje','Fast logging':'Registro rápido','Setup':'Configuración','Project & camera':'Proyecto y cámara','Daily Report':'Reporte diario','All logged takes':'Todas las tomas registradas','Documents':'Documentos','Export & backup':'Exportar y respaldar','shoot_deck':'Registra primero la toma. Todo lo que no haya cambiado permanece activo automáticamente.','setup_deck':'Define el proyecto, la cámara y los valores técnicos por defecto del reporte.','report_deck':'Un registro completo fila por fila. Los ajustes persistentes se escriben en cada toma guardada.','documents_deck':'Genera un reporte para producción, datos para hoja de cálculo o un respaldo restaurable.','Takes':'Tomas','Clips':'Clips','Recorded':'Grabado','Current take':'Toma actual','Scene / Shot':'Escena / Plano','Take':'Toma','Roll / Card':'Rollo / Tarjeta','Clip':'Clip','Current camera state · persists until changed':'Estado actual de cámara · se mantiene hasta cambiar','Exposure / image state':'Exposición / estado de imagen','Optional duration timer':'Temporizador de duración opcional','Timer optional — save the take at any time.':'El temporizador es opcional — puedes guardar la toma en cualquier momento.','Duration (optional)':'Duración (opcional)','SAVE TAKE + NEXT':'GUARDAR TOMA + SIGUIENTE','Lens':'Lente','T-stop':'T-stop','Filter':'Filtro','FPS':'FPS','ROLL':'ROLL','CUT':'CUT','RECORDING':'GRABANDO','Take result / flags':'Resultado / marcas','Preferred':'Preferida','Hold':'Hold','Notes':'Notas','SAVE + NEXT TAKE':'GUARDAR + SIGUIENTE TOMA','+ NEW CARD':'+ NUEVA TARJETA','NEW SCENE / TAKE 1':'NUEVA ESCENA / TOMA 1','Latest entries':'Últimos registros','No takes logged yet.':'Todavía no hay tomas registradas.','Duration':'Duración','Flags':'Marcas','Clear':'Limpiar','Project information':'Información del proyecto','Technical setup':'Configuración técnica','Project':'Proyecto','Production':'Producción','Date':'Fecha','Shoot day':'Día de rodaje','Camera / Serial':'Cámara / Serie','Format / Codec':'Formato / Codec','Resolution':'Resolución','Base FPS':'FPS base','Shutter':'Obturador','EI / ISO':'EI / ISO','White Balance':'Balance de blancos','LUT / Look':'LUT / Look','Lens Set':'Juego de lentes','Timecode':'Timecode','Sensor / Mode':'Sensor / Modo','Aspect / Squeeze':'Aspecto / Squeeze','Save setup':'Guardar configuración','Report entries':'Registros del reporte','Export CSV':'Exportar CSV','Print / Save PDF':'Imprimir / Guardar PDF','Project Backup':'Respaldo del proyecto','Export backup':'Exportar respaldo','Production Report':'Reporte de producción','CSV Data':'Datos CSV','Structured camera report data for spreadsheet or post workflow.':'Datos estructurados del reporte para hoja de cálculo o flujo de post.','A4 camera report using the CDS working-document system.':'Reporte de cámara A4 usando el sistema de documentos CDS.','Restorable local-first project backup for another browser or device.':'Respaldo local-first restaurable para otro navegador o dispositivo.','About':'Acerca de','about_copy':'Interactive Camera Report está diseñado para reducir la escritura en rodaje. Los ajustes de cámara persisten hasta que cambien, mientras cada toma guardada conserva un registro técnico completo.','Data':'Datos','data_copy':'Los datos se guardan localmente en este navegador y no se envían a un servidor. El autoguardado es silencioso. Exporta un respaldo JSON para trabajos importantes y antes de cambiar de dispositivo.','Workflow':'Flujo','workflow_copy':'Define el estado actual de cámara. Usa ROLL / CUT cuando quieras capturar automáticamente la duración del clip, o salta el temporizador y guarda la toma directamente. Las marcas, notas y duración son opcionales.','Flag legend':'Leyenda de marcas','flags_copy':'○ preferida · H hold · NG no válida · FS salida falsa · MOS sin sonido sincronizado · VFX efectos visuales','Offline':'Offline','offline_copy':'Este prototipo es un archivo HTML local-first autocontenido. El empaquetado como app instalable puede aplicarse cuando el flujo quede cerrado.','Imported project':'Proyecto importado','Invalid backup file.':'Archivo de respaldo no válido.','Project imported.':'Proyecto importado.','Project created.':'Proyecto creado.','Project duplicated.':'Proyecto duplicado.','Project deleted.':'Proyecto eliminado.','Setup saved.':'Configuración guardada.','Take saved.':'Toma guardada.','Nothing to export yet.':'Todavía no hay nada para exportar.','New card ready.':'Nueva tarjeta lista.','New scene ready.':'Nueva escena lista.','Delete this project?':'¿Eliminar este proyecto?','No production set':'Productora no definida','Last updated':'Última actualización','Camera report':'Reporte de cámara','PAGE':'PÁGINA'
+},
+fr:{
+'Interactive':'Interactive','Camera':'Caméra','Report':'Rapport','launch_lede':'Un rapport caméra rapide et local-first, basé sur des réglages persistants et un minimum de saisie sur le plateau.','New project':'Nouveau projet','Import project':'Importer un projet','Local-first by design.':'Local-first par conception.','privacy_copy':'Les données du rapport sont stockées dans ce navigateur et ne sont pas envoyées à un serveur. Exportez une sauvegarde avant de changer d’appareil ou d’effacer les données du navigateur.','Projects':'Projets','Create project':'Créer le projet','Project title':'Titre du projet','Production company':'Production','Camera ID':'ID caméra','Shoot date':'Date de tournage','Cancel':'Annuler','About / Data & Backups':'À propos / Données et sauvegardes','Open':'Ouvrir','Duplicate':'Dupliquer','Delete':'Supprimer','No projects yet.':'Aucun projet pour le moment.','Create a project to begin.':'Créez un projet pour commencer.','Untitled Report':'Rapport sans titre','Copy':'Copie','Shoot':'Tournage','Fast logging':'Saisie rapide','Setup':'Configuration','Project & camera':'Projet et caméra','Daily Report':'Rapport quotidien','All logged takes':'Toutes les prises enregistrées','Documents':'Documents','Export & backup':'Export et sauvegarde','shoot_deck':'Enregistrez d’abord la prise. Tout ce qui n’a pas changé reste automatiquement actif.','setup_deck':'Définissez le projet, la caméra et les valeurs techniques par défaut du rapport.','report_deck':'Un relevé complet, ligne par ligne. Les réglages persistants sont inscrits dans chaque prise sauvegardée.','documents_deck':'Générez un rapport pour la production, des données tableur ou une sauvegarde restaurable.','Takes':'Prises','Clips':'Clips','Recorded':'Enregistré','Current take':'Prise actuelle','Scene / Shot':'Scène / Plan','Take':'Prise','Roll / Card':'Rouleau / Carte','Clip':'Clip','Current camera state · persists until changed':'État caméra actuel · persiste jusqu’à modification','Exposure / image state':'Exposition / état image','Optional duration timer':'Chronomètre de durée optionnel','Timer optional — save the take at any time.':'Le chronomètre est optionnel — vous pouvez enregistrer la prise à tout moment.','Duration (optional)':'Durée (optionnelle)','SAVE TAKE + NEXT':'ENREGISTRER PRISE + SUIVANTE','Lens':'Objectif','T-stop':'Diaph T','Filter':'Filtre','FPS':'FPS','ROLL':'ROLL','CUT':'CUT','RECORDING':'ENREGISTREMENT','Take result / flags':'Résultat / repères','Preferred':'Préférée','Hold':'Hold','Notes':'Notes','SAVE + NEXT TAKE':'ENREGISTRER + PRISE SUIVANTE','+ NEW CARD':'+ NOUVELLE CARTE','NEW SCENE / TAKE 1':'NOUVELLE SCÈNE / PRISE 1','Latest entries':'Dernières entrées','No takes logged yet.':'Aucune prise enregistrée.','Duration':'Durée','Flags':'Repères','Clear':'Effacer','Project information':'Informations projet','Technical setup':'Configuration technique','Project':'Projet','Production':'Production','Date':'Date','Shoot day':'Jour de tournage','Camera / Serial':'Caméra / Série','Format / Codec':'Format / Codec','Resolution':'Résolution','Base FPS':'FPS de base','Shutter':'Obturateur','EI / ISO':'EI / ISO','White Balance':'Balance des blancs','LUT / Look':'LUT / Look','Lens Set':'Série d’objectifs','Timecode':'Timecode','Sensor / Mode':'Capteur / Mode','Aspect / Squeeze':'Format / Squeeze','Save setup':'Enregistrer la configuration','Report entries':'Entrées du rapport','Export CSV':'Exporter CSV','Print / Save PDF':'Imprimer / Enregistrer PDF','Project Backup':'Sauvegarde du projet','Export backup':'Exporter la sauvegarde','Production Report':'Rapport production','CSV Data':'Données CSV','Structured camera report data for spreadsheet or post workflow.':'Données structurées du rapport pour tableur ou flux de postproduction.','A4 camera report using the CDS working-document system.':'Rapport caméra A4 utilisant le système de documents CDS.','Restorable local-first project backup for another browser or device.':'Sauvegarde local-first restaurable dans un autre navigateur ou appareil.','About':'À propos','about_copy':'Interactive Camera Report est conçu pour réduire la saisie sur le plateau. Les réglages caméra persistent jusqu’à leur modification, tandis que chaque prise sauvegardée conserve un relevé technique complet.','Data':'Données','data_copy':'Les données du projet sont stockées localement dans ce navigateur et ne sont pas envoyées à un serveur. L’enregistrement automatique est silencieux. Exportez une sauvegarde JSON pour les projets importants et avant de changer d’appareil.','Workflow':'Flux de travail','workflow_copy':'Définissez l’état caméra actuel. Utilisez ROLL / CUT pour capturer automatiquement la durée du clip, ou ignorez le chronomètre et enregistrez directement la prise. Les repères, notes et la durée sont optionnels.','Flag legend':'Légende des repères','flags_copy':'○ préférée · H hold · NG non valable · FS faux départ · MOS sans son synchro · VFX effets visuels','Offline':'Hors ligne','offline_copy':'Ce prototype est un fichier HTML local-first autonome. L’empaquetage en application installable pourra être appliqué une fois le flux de rapport validé.','Imported project':'Projet importé','Invalid backup file.':'Fichier de sauvegarde invalide.','Project imported.':'Projet importé.','Project created.':'Projet créé.','Project duplicated.':'Projet dupliqué.','Project deleted.':'Projet supprimé.','Setup saved.':'Configuration enregistrée.','Take saved.':'Prise enregistrée.','Nothing to export yet.':'Rien à exporter pour le moment.','New card ready.':'Nouvelle carte prête.','New scene ready.':'Nouvelle scène prête.','Delete this project?':'Supprimer ce projet ?','No production set':'Production non définie','Last updated':'Dernière mise à jour','Camera report':'Rapport caméra','PAGE':'PAGE'
+}};
+
+
+Object.assign(I18N.en,{
+'Continued':'Continued',
+'PROJECT RECORD':'PROJECT RECORD','REPORT SCOPE':'REPORT SCOPE','SHOOT DAYS':'SHOOT DAYS',
+'Complete report':'Complete report','All shoot days':'All shoot days with their camera-report records.',
+'Selected shoot days':'Selected shoot days','Choose shoot days':'Choose exactly which shoot days to include.',
+'Choose report days':'Choose which shoot days to include before opening the report preview.',
+'A4 · PORTRAIT':'A4 · PORTRAIT','Preview / Print':'Preview / Print',
+'Uses report days':'Uses the report-day selection above.','Report logic':'Report logic',
+'Report logic copy':'Complete report includes all shoot days. Selected shoot days lets you build a single-day or multi-day report. The same selection is used for CSV export.',
+'Select at least one shoot day.':'Select at least one shoot day.','Preparing PDF…':'Preparing PDF…',
+'Camera Report':'Camera Report',
+'Suggestions':'Suggestions',
+'Document scope':'Document scope',
+'Camera Report':'Camera Report','Documents':'Documents',
+'Section':'Section',
+'Camera Log':'Camera Log','shoot_deck':'Log takes and clips quickly while the current camera state carries forward until you change it.'
+});
+Object.assign(I18N.es,{
+'Continued':'Continuación',
+'PROJECT RECORD':'REGISTRO DEL PROYECTO','REPORT SCOPE':'ALCANCE DEL REPORTE','SHOOT DAYS':'DÍAS DE RODAJE',
+'Complete report':'Reporte completo','All shoot days':'Todos los días de rodaje con sus registros de cámara.',
+'Selected shoot days':'Días seleccionados','Choose shoot days':'Elige exactamente qué días de rodaje incluir.',
+'Choose report days':'Elige qué días de rodaje incluir antes de abrir la vista previa del reporte.',
+'A4 · PORTRAIT':'A4 · VERTICAL','Preview / Print':'Vista previa / Imprimir',
+'Uses report days':'Usa la selección de días del reporte de arriba.','Report logic':'Lógica del reporte',
+'Report logic copy':'Reporte completo incluye todos los días de rodaje. Días seleccionados permite crear un reporte de un solo día o de varios días. La misma selección se usa para exportar CSV.',
+'Select at least one shoot day.':'Selecciona al menos un día de rodaje.','Preparing PDF…':'Preparando PDF…',
+'Camera Report':'Reporte de Cámara',
+'Suggestions':'Sugerencias',
+'Document scope':'Alcance del documento',
+'Camera Report':'Reporte de Cámara','Documents':'Documentos',
+'Section':'SECCIÓN',
+'Camera Log':'Registro de cámara','shoot_deck':'Registra tomas y clips rápidamente mientras el estado actual de cámara se mantiene hasta que lo cambies.'
+});
+Object.assign(I18N.fr,{
+'Continued':'Suite',
+'PROJECT RECORD':'DOSSIER PROJET','REPORT SCOPE':'PORTÉE DU RAPPORT','SHOOT DAYS':'JOURS DE TOURNAGE',
+'Complete report':'Rapport complet','All shoot days':'Tous les jours de tournage avec leurs données caméra.',
+'Selected shoot days':'Jours sélectionnés','Choose shoot days':'Choisissez exactement les jours de tournage à inclure.',
+'Choose report days':'Choisissez les jours de tournage à inclure avant d’ouvrir l’aperçu du rapport.',
+'A4 · PORTRAIT':'A4 · PORTRAIT','Preview / Print':'Aperçu / Imprimer',
+'Uses report days':'Utilise la sélection des jours du rapport ci-dessus.','Report logic':'Logique du rapport',
+'Report logic copy':'Le rapport complet inclut tous les jours de tournage. Les jours sélectionnés permettent de créer un rapport d’un seul jour ou de plusieurs jours. La même sélection est utilisée pour l’export CSV.',
+'Select at least one shoot day.':'Sélectionnez au moins un jour de tournage.','Preparing PDF…':'Préparation du PDF…',
+'Camera Report':'Rapport Caméra',
+'Suggestions':'Suggestions',
+'Document scope':'Portée du document',
+'Camera Report':'Rapport Caméra','Documents':'Documents',
+'Section':'SECTION',
+'Camera Log':'Journal caméra','shoot_deck':'Enregistrez rapidement prises et clips tandis que l’état caméra actuel reste actif jusqu’à ce que vous le changiez.'
+});
+Object.assign(I18N.en,{
+'Reports':'Reports','Project reports':'Day & project reports','Shoot days':'Shoot days','New shoot day':'New shoot day','Create day':'Create day','Carry previous camera state':'Carry previous camera state','Current day':'Current day','Complete project':'Complete project','Report scope':'Report scope','Day created.':'Shoot day created.','No takes logged for this scope.':'No takes logged for this scope.','day_count':'shoot days','day_singular':'shoot day','Day':'Day','Current day report':'Current day report','Complete project report':'Complete project report','Scope':'Scope','reports_deck':'Review a shoot day or the complete project, then print, export or back up the project.','Reports & export':'Reports & export','Output & backup':'Output & backup','Select a day or the complete project before exporting.':'Select a day or the complete project before exporting.','Day report':'Day report','Project report':'Project report','Carry state help':'Carries lens, stop, filter, FPS, shutter, ISO, white balance and look. Scene, take, card, clip and daily totals start fresh.','No shoot days.':'No shoot days.'
+});
+Object.assign(I18N.es,{
+'Reports':'Reportes','Project reports':'Reportes por día y proyecto','Shoot days':'Días de rodaje','New shoot day':'Nuevo día de rodaje','Create day':'Crear día','Carry previous camera state':'Mantener el estado de cámara del día anterior','Current day':'Día actual','Complete project':'Proyecto completo','Report scope':'Alcance del reporte','Day created.':'Día de rodaje creado.','No takes logged for this scope.':'No hay tomas registradas para este alcance.','day_count':'días de rodaje','day_singular':'día de rodaje','Day':'Día','Current day report':'Reporte del día actual','Complete project report':'Reporte del proyecto completo','Scope':'Alcance','reports_deck':'Revisa un día de rodaje o el proyecto completo y luego imprime, exporta o crea un respaldo.','Reports & export':'Reportes y exportación','Output & backup':'Salida y respaldo','Select a day or the complete project before exporting.':'Selecciona un día o el proyecto completo antes de exportar.','Day report':'Reporte diario','Project report':'Reporte de proyecto','Carry state help':'Mantiene lente, diafragma, filtro, FPS, obturador, ISO, balance de blancos y look. Escena, toma, tarjeta, clip y totales diarios empiezan de cero.','No shoot days.':'No hay días de rodaje.'
+});
+Object.assign(I18N.fr,{
+'Reports':'Rapports','Project reports':'Rapports par jour et projet','Shoot days':'Jours de tournage','New shoot day':'Nouveau jour de tournage','Create day':'Créer le jour','Carry previous camera state':'Reprendre l’état caméra du jour précédent','Current day':'Jour actuel','Complete project':'Projet complet','Report scope':'Portée du rapport','Day created.':'Jour de tournage créé.','No takes logged for this scope.':'Aucune prise enregistrée pour cette sélection.','day_count':'jours de tournage','day_singular':'jour de tournage','Day':'Jour','Current day report':'Rapport du jour actuel','Complete project report':'Rapport du projet complet','Scope':'Portée','reports_deck':'Consultez un jour de tournage ou le projet complet, puis imprimez, exportez ou sauvegardez le projet.','Reports & export':'Rapports et export','Output & backup':'Sortie et sauvegarde','Select a day or the complete project before exporting.':'Sélectionnez un jour ou le projet complet avant l’export.','Day report':'Rapport journalier','Project report':'Rapport projet','Carry state help':'Reprend objectif, diaph, filtre, FPS, obturateur, ISO, balance des blancs et look. Scène, prise, carte, clip et totaux du jour repartent à zéro.','No shoot days.':'Aucun jour de tournage.'
+});
+Object.assign(I18N.en,{
+'+ NEW SCENE':'+ NEW SCENE',
+'New scene / shot':'New scene / shot',
+'New scene help':'Enter the next scene or shot. Take resets to 1. Card, clip and camera state stay unchanged.',
+'Set scene':'Set scene',
+'New scene set.':'New scene set.',
+'Print / PDF scope':'Print / PDF scope',
+'Choose what to print':'Choose what to print',
+'Select print scope help':'Select a shoot day or the complete project before printing or saving a PDF.',
+'Choose day or project…':'Choose day or project…'
+});
+Object.assign(I18N.es,{
+'+ NEW SCENE':'+ NUEVA ESCENA',
+'New scene / shot':'Nueva escena / plano',
+'New scene help':'Introduce la siguiente escena o plano. La toma vuelve a 1. La tarjeta, el clip y el estado de cámara no cambian.',
+'Set scene':'Definir escena',
+'New scene set.':'Nueva escena definida.',
+'Print / PDF scope':'Alcance de impresión / PDF',
+'Choose what to print':'Elige qué imprimir',
+'Select print scope help':'Selecciona un día de rodaje o el proyecto completo antes de imprimir o guardar un PDF.',
+'Choose day or project…':'Elige día o proyecto…'
+});
+Object.assign(I18N.fr,{
+'+ NEW SCENE':'+ NOUVELLE SCÈNE',
+'New scene / shot':'Nouvelle scène / plan',
+'New scene help':'Saisissez la scène ou le plan suivant. La prise revient à 1. La carte, le clip et l’état caméra restent inchangés.',
+'Set scene':'Définir la scène',
+'New scene set.':'Nouvelle scène définie.',
+'Print / PDF scope':'Portée impression / PDF',
+'Choose what to print':'Choisir quoi imprimer',
+'Select print scope help':'Sélectionnez un jour de tournage ou le projet complet avant d’imprimer ou d’enregistrer un PDF.',
+'Choose day or project…':'Choisir jour ou projet…'
+});
+
+Object.assign(I18N.en,{
+'No Good':'No Good','False Start':'False Start','No Sync Sound':'No Sync Sound','Visual Effects':'Visual Effects',
+'flag_hint':'Multiple flags may be combined. Color highlights the take result; MOS and VFX remain informational.'
+});
+Object.assign(I18N.es,{
+'No Good':'No válida','False Start':'Salida falsa','No Sync Sound':'Sin sonido sincronizado','Visual Effects':'Efectos visuales',
+'flag_hint':'Puedes combinar varias marcas. El color destaca el resultado de la toma; MOS y VFX son informativos.'
+});
+Object.assign(I18N.fr,{
+'No Good':'Non valable','False Start':'Faux départ','No Sync Sound':'Sans son synchro','Visual Effects':'Effets visuels',
+'flag_hint':'Plusieurs repères peuvent être combinés. La couleur indique le résultat de la prise; MOS et VFX restent informatifs.'
+});
+
+Object.assign(I18N.en,{
+'Generating PDF…':'Generating PDF…','Open PDF':'Open PDF','Generate PDF':'Generate PDF','Open PDF help':'Open the PDF to save, share or print.',
+'PDF created locally.':'PDF created locally.','PDF generation failed.':'PDF generation failed.'
+});
+Object.assign(I18N.es,{
+'Generating PDF…':'Generando PDF…','Open PDF':'Abrir PDF','Generate PDF':'Generar PDF','Open PDF help':'Abre el PDF para guardarlo, compartirlo o imprimirlo.',
+'PDF created locally.':'PDF creado localmente.','PDF generation failed.':'No se pudo generar el PDF.'
+});
+Object.assign(I18N.fr,{
+'Generating PDF…':'Création du PDF…','Open PDF':'Ouvrir le PDF','Generate PDF':'Générer le PDF','Open PDF help':'Ouvrez le PDF pour l’enregistrer, le partager ou l’imprimer.',
+'PDF created locally.':'PDF créé localement.','PDF generation failed.':'Échec de la création du PDF.'
+});
+function t(k){return I18N[lang]?.[k]||I18N.en[k]||k}
+function uid(){return 'r_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function loadProjects(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'[]')}catch{return[]}}
+function saveProjects(){localStorage.setItem(STORE_KEY,JSON.stringify(projects))}
+function nowISO(){return new Date().toISOString()}
+function current(){return projects.find(p=>p.id===currentId)||null}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function pad(n,l=2){return String(n).padStart(l,'0')}
+function fmtTime(sec){sec=Math.max(0,Math.round(Number(sec)||0));return pad(Math.floor(sec/60))+':'+pad(sec%60)}
+function fmtDuration(sec){return sec===null||sec===undefined||sec===''?'—':fmtTime(sec)}
+function parseDuration(v){const raw=String(v??'').trim();if(!raw)return null;if(/^\d+(?:\.\d+)?$/.test(raw))return Math.max(0,Math.round(Number(raw)));const parts=raw.split(':').map(x=>Number(x));if(parts.some(x=>!Number.isFinite(x)||x<0))return null;if(parts.length===2)return Math.round(parts[0]*60+parts[1]);if(parts.length===3)return Math.round(parts[0]*3600+parts[1]*60+parts[2]);return null}
+function dateDisplay(v){if(!v)return '—';try{return new Intl.DateTimeFormat(lang==='es'?'es-PE':lang==='fr'?'fr-FR':'en-GB',{dateStyle:'medium'}).format(new Date(v+'T12:00:00'))}catch{return v}}
+function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.remove('hidden');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.add('hidden'),1800)}
+function download(name,type,data){const blob=new Blob([data],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function safeName(s){return String(s||'camera-report').trim().replace(/[^a-z0-9-_]+/gi,'_').replace(/^_+|_+$/g,'')||'camera-report'}
+function touch(p){p.updatedAt=nowISO();saveProjects()}
+function defaultState(meta={}){return {scene:'1',take:1,card:'A001',clip:'A001C001',lens:'50mm',stop:'T2.8',filter:'CLEAR',fps:meta.baseFps||'24',shutter:meta.shutter||'180°',eiIso:meta.eiIso||'',whiteBalance:meta.whiteBalance||'',lutLook:meta.lutLook||'',sensorMode:meta.sensorMode||'',aspectSqueeze:meta.aspectSqueeze||''}}
+function makeDay(p,number,date,carry){const base=defaultState(p.meta);if(carry){const n=Number(number)||Infinity;const prev=(p.days||[]).slice().filter(d=>(Number(d.number)||0)<n).sort((a,b)=>(Number(b.number)||0)-(Number(a.number)||0))[0]||(p.days||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];if(prev){['lens','stop','filter','fps','shutter','eiIso','whiteBalance','lutLook','sensorMode','aspectSqueeze'].forEach(k=>base[k]=prev.state?.[k]??base[k])}}return {id:uid(),number:String(number||1),date:date||new Date().toISOString().slice(0,10),createdAt:nowISO(),state:base,records:[],notes:''}}
+function defaultProject(){const p={id:uid(),format:BACKUP_FORMAT,version:BACKUP_VERSION,createdAt:nowISO(),updatedAt:nowISO(),meta:{project:'',production:'',cameraId:'A CAM',cameraSerial:'',formatCodec:'',resolution:'',baseFps:'24',shutter:'180°',eiIso:'',whiteBalance:'',lutLook:'',lensSet:'',timecode:'',sensorMode:'',aspectSqueeze:''},days:[],activeDayId:null};const d=makeDay(p,1,new Date().toISOString().slice(0,10),false);p.days=[d];p.activeDayId=d.id;return p}
+function ensureRecordShape(r,p){if(r.shutter===undefined)r.shutter=p.meta.shutter||'';if(r.eiIso===undefined)r.eiIso=p.meta.eiIso||'';if(r.whiteBalance===undefined)r.whiteBalance=p.meta.whiteBalance||'';if(r.lutLook===undefined)r.lutLook=p.meta.lutLook||'';if(r.duration===0&&r._durationOptional===true)r.duration=null;return r}
+function ensureProjectShape(p){if(!p)return p;p.meta=p.meta||{};p.days=Array.isArray(p.days)?p.days:[];
+  if(!p.days.length){const d={id:uid(),number:String(p.meta.shootDay||1),date:p.meta.date||new Date().toISOString().slice(0,10),createdAt:p.createdAt||nowISO(),state:p.state||defaultState(p.meta),records:Array.isArray(p.records)?p.records:[],notes:''};p.days=[d];p.activeDayId=d.id}
+  p.days.forEach((d,i)=>{d.id=d.id||uid();d.number=String(d.number||i+1);d.date=d.date||new Date().toISOString().slice(0,10);d.state=d.state||defaultState(p.meta);d.records=Array.isArray(d.records)?d.records:[];const defs=defaultState(p.meta);Object.entries(defs).forEach(([k,v])=>{if(d.state[k]===undefined||d.state[k]===null)d.state[k]=v});d.records.forEach(r=>ensureRecordShape(r,p))});
+  if(!p.activeDayId||!p.days.some(d=>d.id===p.activeDayId))p.activeDayId=p.days[0]?.id||null;p.version=BACKUP_VERSION;return p}
+projects.forEach(ensureProjectShape);saveProjects();
+function currentDay(p=current()){if(!p)return null;return p.days.find(d=>d.id===p.activeDayId)||p.days[0]||null}
+function dayById(p,id){return p?.days?.find(d=>d.id===id)||null}
+function allRecords(p){return (p.days||[]).flatMap(d=>(d.records||[]).map(r=>({...r,_dayId:d.id,_dayNumber:d.number,_dayDate:d.date})))}
+function totalDuration(records){return (records||[]).reduce((a,r)=>a+(Number(r.duration)||0),0)}
+function recordsForScope(p,scope){if(!p)return[];if(scope==='all')return allRecords(p);const id=scope==='current'?p.activeDayId:scope.replace(/^day:/,'');const d=dayById(p,id);return (d?.records||[]).map(r=>({...r,_dayId:d.id,_dayNumber:d.number,_dayDate:d.date}))}
+function scopeDay(p,scope){if(scope==='all')return null;const id=scope==='current'?p.activeDayId:scope.replace(/^day:/,'');return dayById(p,id)}
+function incrementTrailing(value){const m=String(value).match(/(\d+)$/);if(!m)return value;const n=Number(m[1])+1;return value.slice(0,-m[1].length)+pad(n,m[1].length)}
+function nextDate(v){if(!v)return new Date().toISOString().slice(0,10);const d=new Date(v+'T12:00:00');d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
+
+const SECTIONS=[['setup','00','Setup','Project & camera'],['shoot','01','Camera Report','Fast logging'],['report','02','Documents','Reports & export']];
+function localizeStatic(){document.documentElement.lang=lang;$$('[data-t]').forEach(el=>el.textContent=t(el.dataset.t));$$('.langchoice').forEach(b=>{const on=b.dataset.lang===lang;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});$('#appInfoBtn').setAttribute('aria-label',t('About / Data & Backups'));$('#themeBtn').setAttribute('aria-label',lang==='es'?'Cambiar tema':lang==='fr'?'Changer de thème':'Toggle theme')}
+function renderLaunch(){
+  $('#launchView').classList.remove('hidden');$('#appView').classList.add('hidden');const list=$('#projectList');list.innerHTML='';
+  if(!projects.length){list.innerHTML=`<div class="empty-project-library"><strong>${esc(t('No projects yet.'))}</strong><span>${esc(t('Create a project to begin.'))}</span></div>`;return}
+  projects.slice().sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||'')).forEach(p=>{ensureProjectShape(p);const last=p.days.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];const count=p.days.length;const card=document.createElement('div');card.className='project-card';card.innerHTML=`<button class="project-open" type="button"><strong>${esc(p.meta.project||t('Untitled Report'))}</strong><small>${esc(p.meta.production||t('No production set'))}</small><div class="project-days">${count} ${esc(count===1?t('day_singular'):t('day_count'))}</div><div class="meta"><span>${esc(p.meta.cameraSerial||p.meta.cameraId||'—')}</span><span>${esc(dateDisplay(last?.date))}</span></div></button><div class="project-actions"><button class="softbtn openBtn" type="button">${esc(t('Open'))}</button><button class="softbtn dupBtn" type="button">${esc(t('Duplicate'))}</button><button class="dangerbtn delBtn" type="button">${esc(t('Delete'))}</button></div>`;card.querySelector('.project-open').onclick=card.querySelector('.openBtn').onclick=()=>openProject(p.id);card.querySelector('.dupBtn').onclick=()=>duplicateProject(p.id);card.querySelector('.delBtn').onclick=()=>deleteProject(p.id);list.appendChild(card)})
+}
+function openProject(id,target='shoot'){const op=projects.find(p=>p.id===id);if(op){ensureProjectShape(op);saveProjects()}currentId=id;section=target;reportScope='current';$('#launchView').classList.add('hidden');$('#appView').classList.remove('hidden');renderApp()}
+function backToProjects(){if(recording)stopRecording(false);currentId=null;renderLaunch()}
+function createProject(){const p=defaultProject();p.meta.project=$('#newProjectTitle').value.trim()||t('Untitled Report');p.meta.production=$('#newProduction').value.trim();p.meta.cameraId=$('#newCameraId').value.trim()||'A CAM';p.days[0].date=$('#newShootDate').value||new Date().toISOString().slice(0,10);projects.push(p);saveProjects();closeModals();toast(t('Project created.'));openProject(p.id,'setup')}
+function duplicateProject(id){const src=projects.find(p=>p.id===id);if(!src)return;const p=JSON.parse(JSON.stringify(src));p.id=uid();p.createdAt=p.updatedAt=nowISO();p.meta.project=(src.meta.project||t('Untitled Report'))+' · '+t('Copy');p.days.forEach(d=>d.id=uid());p.activeDayId=p.days[0]?.id||null;projects.push(p);saveProjects();toast(t('Project duplicated.'));renderLaunch()}
+function deleteProject(id){if(!confirm(t('Delete this project?')))return;projects=projects.filter(p=>p.id!==id);saveProjects();toast(t('Project deleted.'));renderLaunch()}
+function renderApp(){const p=current();if(!p)return backToProjects();$('#sideProjectName').textContent=p.meta.project||t('Untitled Report');$('#sideProjectMeta').textContent=[p.meta.production,p.meta.cameraId].filter(Boolean).join(' · ')||t('Camera report');$('#dashProject').textContent=p.meta.project||t('Untitled Report');renderNav();renderSection()}
+
+function cdsPickerHTML(id,options,value){
+  const current=options.find(o=>o.value===value)||options[0]||{value:'',label:''};
+  return `<div class="cds-picker" data-cds-picker="${esc(id)}">
+    <button type="button" class="cds-picker-button" id="${esc(id)}Button" aria-haspopup="true" aria-expanded="false">
+      <span class="cds-picker-value">${esc(current.label)}</span><span class="cds-picker-chevron">⌄</span>
+    </button>
+    <div class="cds-picker-menu hidden" id="${esc(id)}Menu" role="menu">
+      ${options.map(o=>`<button type="button" class="cds-picker-row ${o.value===value?'active':''}" data-value="${esc(o.value)}" role="menuitem">${esc(o.label)}</button>`).join('')}
+    </div>
+  </div>`;
+}
+function closeCdsPickers(except=null){
+  $$('.cds-picker-menu').forEach(m=>{if(m!==except)m.classList.add('hidden')});
+  $$('.cds-picker-button').forEach(b=>{if(!except||b!==except.previousElementSibling)b.setAttribute('aria-expanded','false')});
+}
+function bindCdsPicker(id,onchange){
+  const wrap=document.querySelector(`[data-cds-picker="${id}"]`);
+  if(!wrap)return;
+  const btn=wrap.querySelector('.cds-picker-button'),menu=wrap.querySelector('.cds-picker-menu');
+  btn.onclick=e=>{
+    e.stopPropagation();
+    const wasOpen=!menu.classList.contains('hidden');
+    closeCdsPickers();
+    if(!wasOpen){menu.classList.remove('hidden');btn.setAttribute('aria-expanded','true')}
+  };
+  wrap.querySelectorAll('.cds-picker-row').forEach(row=>row.onclick=e=>{
+    e.stopPropagation();
+    menu.classList.add('hidden');btn.setAttribute('aria-expanded','false');
+    onchange(row.dataset.value);
+  });
+}
+
+function renderNav(){const nav=$('#sectionNav');nav.innerHTML='';SECTIONS.forEach(([id,num,name,sub])=>{const b=document.createElement('button');b.type='button';b.className='navsection'+(section===id?' active':'');b.innerHTML=`<span class="navnum">${num}</span><span class="navtxt"><b>${esc(t(name))}</b><small>${esc(t(sub))}</small></span>`;b.onclick=()=>setSection(id);nav.appendChild(b)});
+const btn=$('#mobileSectionButton'),menu=$('#mobileSectionMenu'),cur=SECTIONS.find(x=>x[0]===section)||SECTIONS[0];if(btn&&menu){btn.innerHTML=`<span class="mobile-section-left"><span class="navnum">${cur[1]}</span><strong>${esc(t(cur[2]))}</strong></span><span class="mobile-section-chevron">⌄</span>`;menu.innerHTML=SECTIONS.map(([id,num,name])=>`<button type="button" class="mobile-section-row ${section===id?'active':''}" data-mobile-nav="${esc(id)}" role="menuitem"><span class="mobile-section-left"><span class="navnum">${num}</span><strong>${esc(t(name))}</strong></span></button>`).join('');btn.onclick=e=>{e.stopPropagation();const open=menu.classList.toggle('hidden')===false;btn.setAttribute('aria-expanded',open?'true':'false')};$$('[data-mobile-nav]').forEach(r=>r.onclick=()=>{menu.classList.add('hidden');btn.setAttribute('aria-expanded','false');setSection(r.dataset.mobileNav)})}}
+function setSection(id){if(recording&&id!=='shoot')return;section=id;renderNav();renderSection();window.scrollTo({top:0,behavior:'smooth'})}
+function renderSection(){const p=current(),host=$('#sectionContent');if(!p)return;if(section==='shoot')host.innerHTML=shootHTML(p);if(section==='setup')host.innerHTML=setupHTML(p);if(section==='report')host.innerHTML=reportHTML(p);bindSection()}
+function sectionHead(code,title,deckKey){return `<div class="sectionhead"><h2>${esc(t(title))}</h2><p>${esc(t(deckKey))}</p></div>`}
+function daySelectorHTML(p,showNew=true){const d=currentDay(p),opts=p.days.map(x=>({value:x.id,label:`${t('Day')} ${x.number} · ${dateDisplay(x.date)}`}));return `<div class="daybar"><div class="daymain"><label>${esc(t('Shoot days'))}</label>${cdsPickerHTML('activeDayPicker',opts,p.activeDayId)}</div><div class="daymeta">${d?`${esc(t('Current day'))}: ${esc(t('Day'))} ${esc(d.number)} · ${esc(dateDisplay(d.date))}`:''}</div>${showNew?`<button class="softbtn" id="newDayBtn" type="button">+ ${esc(t('New shoot day'))}</button>`:''}</div>`}
+function scopeSelectHTML(p,id='scopeSelect',value=reportScope){const opts=[{value:'current',label:`${t('Current day')} · ${t('Day')} ${currentDay(p)?.number||'—'}`},...p.days.filter(d=>d.id!==p.activeDayId).map(d=>({value:`day:${d.id}`,label:`${t('Day')} ${d.number} · ${dateDisplay(d.date)}`})),{value:'all',label:t('Complete project')}];return `<div class="field"><label>${esc(t('Document scope'))}</label>${cdsPickerHTML(id,opts,value)}</div>`}
+
+const FLAG_ORDER=['○','H','NG','FS','MOS','VFX'];
+function orderedFlags(flags=[]){
+  const set=new Set(flags||[]);
+  return FLAG_ORDER.filter(f=>set.has(f));
+}
+
+function flagClass(flag){
+  return flag==='○'?'flag-preferred':
+         flag==='H'?'flag-hold':
+         flag==='NG'?'flag-ng':
+         flag==='FS'?'flag-fs':
+         flag==='MOS'?'flag-mos':
+         flag==='VFX'?'flag-vfx':'';
+}
+function screenFlagTokens(flags=[]){
+  return orderedFlags(flags).map(f=>`<span class="report-flag-token ${flagClass(f)}">${esc(f)}</span>`).join('');
+}
+function pdfFlagTokens(flags=[]){
+  return orderedFlags(flags).map(f=>`<span class="pdf-flag-token ${flagClass(f)}">${esc(f)}</span>`).join('');
+}
+
+function takeResultClass(r){const f=new Set(r.flags||[]);if(f.has('NG'))return 'take-ng';if(f.has('FS'))return 'take-fs';if(f.has('H'))return 'take-hold';if(f.has('○'))return 'take-preferred';return ''}
+function recordRow(r,showDay=false){return `<tr class="${takeResultClass(r)}">${showDay?`<td>${esc(r._dayNumber||'')}</td><td>${esc(dateDisplay(r._dayDate||''))}</td>`:''}<td>${esc(r.card)}</td><td>${esc(r.clip)}</td><td>${esc(r.scene)}</td><td>${esc(r.take)}</td><td>${esc(r.lens)}</td><td>${esc(r.stop)}</td><td>${esc(r.filter)}</td><td>${esc(r.fps)}</td><td>${esc(fmtDuration(r.duration))}</td><td class="flagcell">${screenFlagTokens(r.flags)}</td><td class="notescol">${esc(r.notes||'')}</td></tr>`}
+
+function printRecordRow(r,showDay=false){return `<tr class="${takeResultClass(r)}">${showDay?`<td>${esc(r._dayNumber||'')}</td><td>${esc(dateDisplay(r._dayDate||''))}</td>`:''}<td>${esc(r.card)}</td><td>${esc(r.clip)}</td><td>${esc(r.scene)}</td><td>${esc(r.take)}</td><td>${esc(r.lens)}</td><td>${esc(r.stop)}</td><td>${esc(r.filter)}</td><td>${esc(r.fps)}</td><td>${esc(fmtDuration(r.duration))}</td><td class="flagcell">${pdfFlagTokens(r.flags)}</td><td class="notescol">${esc(r.notes||'')}</td></tr>`}
+
+const SMART_DEFAULTS={
+  lens:['18mm','21mm','25mm','32mm','40mm','50mm','65mm','75mm','100mm','135mm'],
+  stop:['T1.4','T2','T2.8','T4','T5.6','T8','T11'],
+  filter:['CLEAR','ND.3','ND.6','ND.9','ND1.2','ND1.5','ND1.8','POLA'],
+  fps:['23.976','24','25','29.97','30','48','50','59.94','60','96','100','120'],
+  shutter:['180°','172.8°','144°','90°','45°'],
+  eiIso:['200','320','400','500','640','800','1000','1250','1600','2000','2500','3200'],
+  whiteBalance:['3200K','4300K','5600K','6500K'],
+  scene:[]
+};
+function smartValues(p,kind){
+  const out=[],seen=new Set();
+  const add=v=>{
+    const s=String(v??'').trim();
+    if(!s)return;
+    const key=s.toLowerCase();
+    if(seen.has(key))return;
+    seen.add(key);out.push(s);
+  };
+  const d=currentDay(p);
+  add(d?.state?.[kind]);
+  (p.days||[]).slice().reverse().forEach(day=>{
+    (day.records||[]).slice().reverse().forEach(r=>add(r?.[kind]));
+    add(day.state?.[kind]);
+  });
+  const metaMap={fps:'baseFps',shutter:'shutter',eiIso:'eiIso',whiteBalance:'whiteBalance'};
+  if(metaMap[kind])add(p.meta?.[metaMap[kind]]);
+  (SMART_DEFAULTS[kind]||[]).forEach(add);
+  return out.slice(0,28);
+}
+function smartFieldHTML(id,kind,value){
+  return `<div class="smart-field" data-smart-kind="${esc(kind)}">
+    <input id="${esc(id)}" value="${esc(value)}" autocomplete="off">
+    <button class="smart-trigger" type="button" data-smart-input="${esc(id)}" aria-label="${esc(t('Suggestions'))}">⌄</button>
+    <div class="smart-menu hidden" id="${esc(id)}SmartMenu"></div>
+  </div>`;
+}
+function closeSmartMenus(){
+  $$('.smart-menu').forEach(m=>m.classList.add('hidden'));
+}
+function bindSmartField(id,kind){
+  const input=$('#'+id),trigger=document.querySelector(`[data-smart-input="${id}"]`),menu=$('#'+id+'SmartMenu');
+  if(!input||!trigger||!menu)return;
+  trigger.onclick=e=>{
+    e.stopPropagation();
+    const wasOpen=!menu.classList.contains('hidden');
+    closeSmartMenus();
+    if(wasOpen)return;
+    const p=current(),vals=smartValues(p,kind),currentValue=String(input.value||'').trim().toLowerCase();
+    menu.innerHTML=vals.map(v=>`<button type="button" class="smart-row ${v.toLowerCase()===currentValue?'active':''}" data-smart-value="${esc(v)}">${esc(v)}</button>`).join('');
+    if(!vals.length)return;
+    menu.classList.remove('hidden');
+    menu.querySelectorAll('.smart-row').forEach(row=>row.onclick=ev=>{
+      ev.stopPropagation();
+      input.value=row.dataset.smartValue||'';
+      input.dispatchEvent(new Event('change',{bubbles:true}));
+      closeSmartMenus();
+      input.focus();
+    });
+  };
+}
+
+function tableHead(showDay=false){return `<tr>${showDay?`<th>${esc(t('Day'))}</th><th>${esc(t('Date'))}</th>`:''}<th>${esc(t('Roll / Card'))}</th><th>${esc(t('Clip'))}</th><th>${esc(t('Scene / Shot'))}</th><th>${esc(t('Take'))}</th><th>${esc(t('Lens'))}</th><th>${esc(t('T-stop'))}</th><th>${esc(t('Filter'))}</th><th>${esc(t('FPS'))}</th><th>${esc(t('Duration'))}</th><th>${esc(t('Flags'))}</th><th>${esc(t('Notes'))}</th></tr>`}
+function latestRows(d){const rows=(d.records||[]).slice().reverse();if(!rows.length)return `<tr><td colspan="11" class="tableempty">${esc(t('No takes logged yet.'))}</td></tr>`;return rows.map(r=>recordRow(r,false)).join('')}
+function shootHTML(p){const d=currentDay(p),s=d.state,m=p.meta;const shutter=s.shutter??m.shutter??'',eiIso=s.eiIso??m.eiIso??'',wb=s.whiteBalance??m.whiteBalance??'',lut=s.lutLook??m.lutLook??'';return sectionHead('01','Camera Report','shoot_deck')+daySelectorHTML(p,true)+`
+<div class="shootstats"><div class="statbox"><small>${esc(t('Takes'))}</small><b>${d.records.length}</b></div><div class="statbox"><small>${esc(t('Clips'))}</small><b>${d.records.length}</b></div><div class="statbox"><small>${esc(t('Recorded'))}</small><b>${esc(fmtTime(totalDuration(d.records)))}</b></div></div>
+<div class="card"><div class="takehero"><div><small>${esc(t('Current take'))}</small><strong id="heroScene">${esc(s.scene||'—')}</strong></div><div class="takecount">${esc(t('Take'))} <b id="heroTake">${esc(s.take||1)}</b></div></div>
+<div class="quickrow"><button class="softbtn" id="newCardBtn" type="button">${esc(t('+ NEW CARD'))}</button><button class="softbtn" id="newSceneBtn" type="button">${esc(t('+ NEW SCENE'))}</button></div>
+<div class="grid4"><div class="field"><label>${esc(t('Scene / Shot'))}</label>${smartFieldHTML('sceneInput','scene',s.scene)}</div><div class="field"><label>${esc(t('Take'))}</label><input id="takeInput" type="number" min="1" value="${esc(s.take)}"></div><div class="field"><label>${esc(t('Roll / Card'))}</label><input id="cardInput" value="${esc(s.card)}"></div><div class="field"><label>${esc(t('Clip'))}</label><input id="clipInput" value="${esc(s.clip)}"></div></div>
+<div class="statebar">${esc(t('Current camera state · persists until changed'))}</div>
+<div class="grid4"><div class="field"><label>${esc(t('Lens'))}</label>${smartFieldHTML('lensInput','lens',s.lens)}</div><div class="field"><label>${esc(t('T-stop'))}</label>${smartFieldHTML('stopInput','stop',s.stop)}</div><div class="field"><label>${esc(t('Filter'))}</label>${smartFieldHTML('filterInput','filter',s.filter)}</div><div class="field"><label>${esc(t('FPS'))}</label>${smartFieldHTML('fpsInput','fps',s.fps)}</div></div>
+<div class="statebar secondary">${esc(t('Exposure / image state'))}</div><div class="grid4"><div class="field"><label>${esc(t('Shutter'))}</label>${smartFieldHTML('shutterInput','shutter',shutter)}</div><div class="field"><label>${esc(t('EI / ISO'))}</label>${smartFieldHTML('eiIsoInput','eiIso',eiIso)}</div><div class="field"><label>${esc(t('White Balance'))}</label>${smartFieldHTML('wbInput','whiteBalance',wb)}</div><div class="field"><label>${esc(t('LUT / Look'))}</label><input id="lutInput" value="${esc(lut)}"></div></div>
+<div class="statebar secondary">${esc(t('Optional duration timer'))}</div><p class="timerhint">${esc(t('Timer optional — save the take at any time.'))}</p><div class="recordingline ${recording?'':'hidden'}" id="recordLine"><span><span class="recorddot"></span>${esc(t('RECORDING'))}</span><span class="timer" id="liveTimer">00:00</span></div>
+<div class="resultfields"><div class="field"><label>${esc(t('Duration (optional)'))}</label><input class="durationinput" id="durationInput" inputmode="numeric" placeholder="00:00"></div><div class="field"><label>${esc(t('Notes'))}</label><input id="takeNotes" placeholder="Soft at end / clean plate / flare / camera reset…"></div></div>
+<div class="statebar secondary">${esc(t('Take result / flags'))}</div><div class="flaggrid">${[['○','Preferred'],['H','Hold'],['NG','No Good'],['FS','False Start'],['MOS','No Sync Sound'],['VFX','Visual Effects']].map(([f,label])=>`<button class="flagbtn" data-flag="${f}" type="button" aria-label="${esc(f+' '+t(label))}"><b>${esc(f)}</b><span>${esc(t(label))}</span></button>`).join('')}</div><p class="flaghint">${esc(t('flag_hint'))}</p><div class="takeactions"><button class="rollbtn" id="rollBtn" type="button">${esc(t(recording?'CUT':'ROLL'))}</button><button class="savebtn" id="saveTakeBtn" type="button">${esc(t('SAVE TAKE + NEXT'))}</button></div></div>
+<div class="card"><div class="cardhead"><div><h3>${esc(t('Latest entries'))}</h3><p>${esc(t('Current day'))} · ${esc(t('Day'))} ${esc(d.number)} · ${esc(dateDisplay(d.date))}</p></div></div><div class="tablewrap"><table><thead>${tableHead(false)}</thead><tbody>${latestRows(d)}</tbody></table></div></div>`}
+function setupHTML(p){const m=p.meta;return sectionHead('00','Setup','setup_deck')+`<div class="card"><div class="cardhead"><div><h3>${esc(t('Project information'))}</h3></div></div><div class="fields"><div class="field"><label>${esc(t('Project'))}</label><input id="mProject" value="${esc(m.project)}"></div><div class="field"><label>${esc(t('Production'))}</label><input id="mProduction" value="${esc(m.production)}"></div><div class="field"><label>${esc(t('Camera ID'))}</label><input id="mCameraId" value="${esc(m.cameraId||'')}"></div><div class="field"><label>${esc(t('Camera / Serial'))}</label><input id="mCamera" value="${esc(m.cameraSerial||'')}"></div></div></div><div class="card"><div class="cardhead"><div><h3>${esc(t('Technical setup'))}</h3></div></div><div class="grid4"><div class="field"><label>${esc(t('Format / Codec'))}</label><input id="mFormat" value="${esc(m.formatCodec||'')}"></div><div class="field"><label>${esc(t('Resolution'))}</label><input id="mResolution" value="${esc(m.resolution||'')}"></div><div class="field"><label>${esc(t('Base FPS'))}</label><input id="mBaseFps" value="${esc(m.baseFps||'')}"></div><div class="field"><label>${esc(t('Shutter'))}</label><input id="mShutter" value="${esc(m.shutter||'')}"></div><div class="field"><label>${esc(t('EI / ISO'))}</label><input id="mEiIso" value="${esc(m.eiIso||'')}"></div><div class="field"><label>${esc(t('White Balance'))}</label><input id="mWb" value="${esc(m.whiteBalance||'')}"></div><div class="field"><label>${esc(t('LUT / Look'))}</label><input id="mLut" value="${esc(m.lutLook||'')}"></div><div class="field"><label>${esc(t('Lens Set'))}</label><input id="mLensSet" value="${esc(m.lensSet||'')}"></div><div class="field"><label>${esc(t('Timecode'))}</label><input id="mTc" value="${esc(m.timecode||'')}"></div><div class="field"><label>${esc(t('Sensor / Mode'))}</label><input id="mSensor" value="${esc(m.sensorMode||'')}"></div><div class="field"><label>${esc(t('Aspect / Squeeze'))}</label><input id="mAspect" value="${esc(m.aspectSqueeze||'')}"></div></div><button class="savebtn" id="saveSetupBtn" type="button">${esc(t('Save setup'))}</button></div>`}
+function reportHTML(p){
+  const dayChecks=p.days.map(d=>`<label class="report-chapter"><input type="checkbox" data-report-day="${esc(d.id)}" checked><span><b>${esc(String(d.number).padStart(2,'0'))}</b>${esc(dateDisplay(d.date))}</span></label>`).join('');
+  return sectionHead('02','Documents','reports_deck')+`
+  <div class="documents-grid">
+    <div class="document-card document-card-report">
+      <div><small>${esc(t('PROJECT RECORD'))}</small><h3>${esc(t('Camera Report'))}</h3><p>${esc(t('Choose report days'))}</p></div>
+      <div class="report-options">
+        <div class="report-option-group">
+          <span class="report-option-label">${esc(t('REPORT SCOPE'))}</span>
+          <label class="report-choice"><input type="radio" name="docReportScope" value="all" checked><span><b>${esc(t('Complete report'))}</b><small>${esc(t('All shoot days'))}</small></span></label>
+          <label class="report-choice"><input type="radio" name="docReportScope" value="selected"><span><b>${esc(t('Selected shoot days'))}</b><small>${esc(t('Choose shoot days'))}</small></span></label>
+        </div>
+        <div class="report-selected" id="reportSelectedDays">
+          <span class="report-option-label">${esc(t('SHOOT DAYS'))}</span>
+          <div class="report-day-scroll"><div class="report-chapter-grid">${dayChecks}</div></div>
+        </div>
+      </div>
+      <span class="document-format">${esc(t('A4 · PORTRAIT'))}</span>
+      <button class="solidbtn" id="docPreviewBtn" type="button">${esc(t('Preview / Print'))}</button>
+    </div>
+    <div class="document-card">
+      <div><small>DATA</small><h3>${esc(t('CSV Data'))}</h3><p>${esc(t('Structured camera report data for spreadsheet or post workflow.'))} ${esc(t('Uses report days'))}</p></div>
+      <span class="document-format">CSV</span>
+      <button class="softbtn" id="reportCsvBtn" type="button">${esc(t('Export CSV'))}</button>
+    </div>
+    <div class="document-card">
+      <div><small>BACKUP</small><h3>${esc(t('Project Backup'))}</h3><p>${esc(t('Restorable local-first project backup for another browser or device.'))}</p></div>
+      <span class="document-format">JSON</span>
+      <button class="softbtn" id="reportBackupBtn" type="button">${esc(t('Export backup'))}</button>
+    </div>
+  </div>
+  <div class="documents-note"><strong>${esc(t('Report logic'))}</strong><span>${esc(t('Report logic copy'))}</span></div>`
+}
+function documentReportOptions(){
+  const scope=document.querySelector('input[name="docReportScope"]:checked')?.value||'all';
+  const selected=[...document.querySelectorAll('[data-report-day]:checked')].map(x=>x.dataset.reportDay);
+  return {scope,selected};
+}
+function documentReportDays(p,opts=documentReportOptions()){
+  if(!p)return[];
+  return opts.scope==='all'?p.days.slice():p.days.filter(d=>opts.selected.includes(d.id));
+}
+function refreshDocumentScopeUI(){
+  const scope=document.querySelector('input[name="docReportScope"]:checked')?.value||'all';
+  $('#reportSelectedDays')?.classList.toggle('active',scope==='selected');
+}
+function bindDaySelector(){bindCdsPicker('activeDayPicker',value=>{const p=current();if(!p||recording)return;p.activeDayId=value;reportScope='current';touch(p);renderApp()});const btn=$('#newDayBtn');if(btn)btn.onclick=openNewDayModal}
+function bindSection(){bindDaySelector();if(section==='shoot')bindShoot();if(section==='setup')$('#saveSetupBtn').onclick=saveSetup;if(section==='report'){document.querySelectorAll('input[name="docReportScope"]').forEach(r=>r.onchange=refreshDocumentScopeUI);refreshDocumentScopeUI();$('#docPreviewBtn').onclick=()=>{const p=current(),opts=documentReportOptions(),days=documentReportDays(p,opts);if(opts.scope==='selected'&&!days.length){toast(t('Select at least one shoot day.'));return}previewCameraReport(days,opts)};$('#reportCsvBtn').onclick=()=>{const p=current(),opts=documentReportOptions(),days=documentReportDays(p,opts);if(opts.scope==='selected'&&!days.length){toast(t('Select at least one shoot day.'));return}exportCsvDays(days,opts)};$('#reportBackupBtn').onclick=exportBackup}}
+function syncStateFromShoot(){const p=current(),d=currentDay(p);if(!d)return;const map={scene:'sceneInput',take:'takeInput',card:'cardInput',clip:'clipInput',lens:'lensInput',stop:'stopInput',filter:'filterInput',fps:'fpsInput',shutter:'shutterInput',eiIso:'eiIsoInput',whiteBalance:'wbInput',lutLook:'lutInput'};Object.entries(map).forEach(([k,id])=>{const el=$('#'+id);if(el)d.state[k]=k==='take'?Math.max(1,Number(el.value)||1):el.value.trim()});touch(p);const hs=$('#heroScene'),ht=$('#heroTake');if(hs)hs.textContent=d.state.scene||'—';if(ht)ht.textContent=d.state.take||1}
+function bindShoot(){const inputs={scene:'sceneInput',take:'takeInput',card:'cardInput',clip:'clipInput',lens:'lensInput',stop:'stopInput',filter:'filterInput',fps:'fpsInput',shutter:'shutterInput',eiIso:'eiIsoInput',whiteBalance:'wbInput',lutLook:'lutInput'};Object.entries(inputs).forEach(([k,id])=>{const el=$('#'+id);if(el)el.addEventListener('change',syncStateFromShoot);if(el&&['scene','take'].includes(k))el.addEventListener('input',syncStateFromShoot)});[['sceneInput','scene'],['lensInput','lens'],['stopInput','stop'],['filterInput','filter'],['fpsInput','fps'],['shutterInput','shutter'],['eiIsoInput','eiIso'],['wbInput','whiteBalance']].forEach(([id,kind])=>bindSmartField(id,kind));$('#rollBtn').onclick=()=>recording?stopRecording(true):startRecording();$$('.flagbtn').forEach(b=>b.onclick=()=>{const f=b.dataset.flag;if(pendingFlags.has(f))pendingFlags.delete(f);else pendingFlags.add(f);b.classList.toggle('active',pendingFlags.has(f))});$('#saveTakeBtn').onclick=saveTake;$('#newCardBtn').onclick=newCard;$('#newSceneBtn').onclick=newScene}
+function startRecording(){syncStateFromShoot();recording=true;recordStart=Date.now();pendingDuration=0;const d=$('#durationInput');if(d)d.value='';$('#rollBtn').textContent=t('CUT');$('#rollBtn').classList.add('recording');$('#recordLine').classList.remove('hidden');timerId=setInterval(()=>{const el=$('#liveTimer');if(el)el.textContent=fmtTime((Date.now()-recordStart)/1000)},250)}
+function stopRecording(){if(!recording)return;recording=false;clearInterval(timerId);timerId=null;pendingDuration=Math.max(1,Math.round((Date.now()-recordStart)/1000));if($('#rollBtn')){$('#rollBtn').textContent=t('ROLL');$('#rollBtn').classList.remove('recording')}if($('#recordLine'))$('#recordLine').classList.add('hidden');if($('#durationInput'))$('#durationInput').value=fmtTime(pendingDuration)}
+function saveTake(){const p=current(),d=currentDay(p);if(!p||!d)return;if(recording)stopRecording();syncStateFromShoot();const s=d.state,typedDuration=parseDuration($('#durationInput')?.value),duration=typedDuration!==null?typedDuration:(pendingDuration>0?pendingDuration:null);d.records.push({id:uid(),createdAt:nowISO(),card:s.card,clip:s.clip,scene:s.scene,take:s.take,lens:s.lens,stop:s.stop,filter:s.filter,fps:s.fps,shutter:s.shutter||'',eiIso:s.eiIso||'',whiteBalance:s.whiteBalance||'',lutLook:s.lutLook||'',sensorMode:s.sensorMode||'',aspectSqueeze:s.aspectSqueeze||'',duration,flags:orderedFlags(Array.from(pendingFlags)),notes:$('#takeNotes')?.value.trim()||''});s.take=Math.max(1,Number(s.take)||1)+1;s.clip=incrementTrailing(s.clip);pendingDuration=0;pendingFlags.clear();touch(p);toast(t('Take saved.'));renderSection()}
+function newCard(){const p=current(),d=currentDay(p);if(!p||!d||recording)return;syncStateFromShoot();d.state.card=incrementTrailing(d.state.card);d.state.clip=d.state.card+'C001';touch(p);toast(t('New card ready.'));renderSection()}
+function newScene(){
+  const p=current(),d=currentDay(p);if(!p||!d||recording)return;
+  syncStateFromShoot();
+  $('#sceneModalTitle').textContent=t('New scene / shot');
+  $('#sceneModalHelp').textContent=t('New scene help');
+  $('#sceneModalLabel').textContent=t('Scene / Shot');
+  $('#confirmSceneBtn').textContent=t('Set scene');
+  $('#cancelSceneBtn').textContent=t('Cancel');
+  $('#newSceneInput').value='';
+  $('#newSceneInput').placeholder=d.state.scene?`${d.state.scene} → …`:'42C / INSERT 3';
+  $('#sceneModal').classList.remove('hidden');
+  setTimeout(()=>$('#newSceneInput')?.focus(),20);
+}
+function confirmNewScene(){
+  const p=current(),d=currentDay(p);if(!p||!d||recording)return;
+  const value=String($('#newSceneInput')?.value||'').trim();
+  if(!value){$('#newSceneInput')?.focus();return}
+  syncStateFromShoot();
+  d.state.scene=value;
+  d.state.take=1;
+  touch(p);
+  closeModals();
+  toast(t('New scene set.'));
+  renderSection();
+}
+function saveSetup(){const p=current();if(!p)return;const map={project:'mProject',production:'mProduction',cameraId:'mCameraId',cameraSerial:'mCamera',formatCodec:'mFormat',resolution:'mResolution',baseFps:'mBaseFps',shutter:'mShutter',eiIso:'mEiIso',whiteBalance:'mWb',lutLook:'mLut',lensSet:'mLensSet',timecode:'mTc',sensorMode:'mSensor',aspectSqueeze:'mAspect'};Object.entries(map).forEach(([k,id])=>p.meta[k]=$('#'+id)?.value.trim()||'');touch(p);renderApp();toast(t('Setup saved.'))}
+function openNewDayModal(){const p=current();if(!p||recording)return;const nums=p.days.map(d=>Number(d.number)||0),next=Math.max(0,...nums)+1;const last=p.days.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];$('#newDayNumber').value=next;$('#newDayDate').value=nextDate(last?.date);$('#carryDayState').checked=true;$('#dayModalTitle').textContent=t('New shoot day');$('#dayNumberLabel').textContent=t('Shoot day');$('#dayDateLabel').textContent=t('Date');$('#carryDayLabel').textContent=t('Carry previous camera state')+' — '+t('Carry state help');$('#createDayBtn').textContent=t('Create day');$('#cancelDayBtn').textContent=t('Cancel');$('#dayModal').classList.remove('hidden')}
+function createDay(){const p=current();if(!p)return;const number=$('#newDayNumber').value||String(p.days.length+1),date=$('#newDayDate').value||new Date().toISOString().slice(0,10),carry=$('#carryDayState').checked;const d=makeDay(p,number,date,carry);p.days.push(d);p.activeDayId=d.id;reportScope='current';touch(p);closeModals();toast(t('Day created.'));renderApp()}
+function csvCell(v){const s=String(v??'');return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+function exportCsv(scope=reportScope){const p=current(),rows=recordsForScope(p,scope);if(!p||!rows.length){toast(t('Nothing to export yet.'));return}const head=[t('Day'),t('Date'),t('Roll / Card'),t('Clip'),t('Scene / Shot'),t('Take'),t('Lens'),t('T-stop'),t('Filter'),t('FPS'),t('Shutter'),t('EI / ISO'),t('White Balance'),t('LUT / Look'),t('Duration'),t('Flags'),t('Notes')];const data=rows.map(r=>[r._dayNumber,r._dayDate,r.card,r.clip,r.scene,r.take,r.lens,r.stop,r.filter,r.fps,r.shutter||'',r.eiIso||'',r.whiteBalance||'',r.lutLook||'',r.duration===null||r.duration===undefined?'':fmtTime(r.duration),orderedFlags(r.flags).join(' '),r.notes]);const d=scopeDay(p,scope);const suffix=scope==='all'?'FULL_PROJECT':`DAY_${pad(d?.number||1)}_${d?.date||''}`;download(safeName(p.meta.project)+'_'+suffix+'_CAMERA_REPORT.csv','text/csv;charset=utf-8','\ufeff'+[head,...data].map(row=>row.map(csvCell).join(',')).join('\n'))}
+
+function exportCsvDays(days,opts={scope:'all',selected:[]}){
+  const p=current();if(!p)return;
+  const rows=(days||[]).flatMap(d=>(d.records||[]).map(r=>({...r,_dayNumber:d.number,_dayDate:d.date})));
+  if(!rows.length){toast(t('Nothing to export yet.'));return}
+  const head=[t('Day'),t('Date'),t('Roll / Card'),t('Clip'),t('Scene / Shot'),t('Take'),t('Lens'),t('T-stop'),t('Filter'),t('FPS'),t('Shutter'),t('EI / ISO'),t('White Balance'),t('LUT / Look'),t('Duration'),t('Flags'),t('Notes')];
+  const data=rows.map(r=>[r._dayNumber,r._dayDate,r.card,r.clip,r.scene,r.take,r.lens,r.stop,r.filter,r.fps,r.shutter||'',r.eiIso||'',r.whiteBalance||'',r.lutLook||'',r.duration===null||r.duration===undefined?'':fmtTime(r.duration),orderedFlags(r.flags).join(' '),r.notes]);
+  const suffix=(opts.scope==='all')?'FULL_PROJECT':days.length===1?`DAY_${pad(days[0].number||1)}_${days[0].date||''}`:'SELECTED_DAYS';
+  download(safeName(p.meta.project)+'_'+suffix+'_CAMERA_REPORT.csv','text/csv;charset=utf-8','\ufeff'+[head,...data].map(row=>row.map(csvCell).join(',')).join('\n'));
+}
+
+function exportBackup(){const p=current();if(!p)return;const payload={format:BACKUP_FORMAT,version:BACKUP_VERSION,appVersion:APP_VERSION,exportedAt:nowISO(),project:p};download(safeName(p.meta.project)+'_REPORT_BACKUP.json','application/json',JSON.stringify(payload,null,2))}
+function printMeta(label,val){return `<div><b>${esc(t(label))}</b><span>${esc(val||'—')}</span></div>`}
+function printDayBlock(p,d,rows,pageIndex,totalPages,partIndex=0){const m=p.meta;const isContinuation=partIndex>0;const camera=m.cameraId||m.cameraSerial||'';const fullHeader=`<div class="pr-mast"><div class="pr-brand"><b>CDS</b><small>CAMERA DEPARTMENT STANDARDS</small></div><div class="pr-code">REPORT / 01 · INTERACTIVE CAMERA REPORT</div></div><div class="pr-doccode">WORKING DOCUMENT · REPORT / 01</div><h1 class="pr-title">${esc(t('Camera report'))}</h1><p class="pr-sub">${esc(m.project||t('Untitled Report'))} · ${esc(m.production||'')}</p><div class="pr-daytitle"><h2>${esc(t('Day report'))} · ${esc(t('Day'))} ${esc(d.number)}</h2><span>${esc(dateDisplay(d.date))}</span></div><div class="pr-meta">${printMeta('Project',m.project)}${printMeta('Production',m.production)}${printMeta('Date',dateDisplay(d.date))}${printMeta('Shoot day',d.number)}${printMeta('Camera / Serial',m.cameraSerial||m.cameraId)}${printMeta('Format / Codec',m.formatCodec)}${printMeta('Resolution',m.resolution)}${printMeta('Base FPS',m.baseFps)}${printMeta('Shutter',m.shutter)}${printMeta('EI / ISO',m.eiIso)}${printMeta('White Balance',m.whiteBalance)}${printMeta('LUT / Look',m.lutLook)}${printMeta('Lens Set',m.lensSet)}${printMeta('Timecode',m.timecode)}${printMeta('Sensor / Mode',m.sensorMode)}${printMeta('Aspect / Squeeze',m.aspectSqueeze)}</div>`;const continuationHeader=`<div class="pr-conthead"><div><b>CDS REPORT / 01</b><span>${esc(m.project||t('Untitled Report'))}</span></div><div class="pr-contmeta"><b>${esc(t('Day'))} ${esc(d.number)} · ${esc(dateDisplay(d.date))}${camera?` · ${esc(camera)}`:''}</b><span>${esc(t('Continued'))}</span></div></div>`;return `<section class="pr-page"><div class="pr-page-body">${isContinuation?continuationHeader:fullHeader}<table class="pr-table"><thead>${tableHead(false)}</thead><tbody>${rows.map(r=>printRecordRow(r,false)).join('')}</tbody></table></div><footer class="pr-page-footer"><span>NICOLAS LASTSCHENKO · CDS REPORT / 01 · 2026</span><span>${lang==='es'?'PÁGINA':lang==='fr'?'PAGE':'PAGE'} ${pageIndex+1} / ${totalPages}</span></footer></section>`}
+
+let reportPdfObjectUrl='';
+function clearReportPdfUrl(){
+  if(reportPdfObjectUrl){URL.revokeObjectURL(reportPdfObjectUrl);reportPdfObjectUrl=''}
+}
+function reportPdfFilenameForDays(p,days,opts={scope:'all'}){
+  const suffix=opts.scope==='all'?'FULL_PROJECT':days.length===1?`DAY_${pad(days[0]?.number||1)}_${days[0]?.date||''}`:'SELECTED_DAYS';
+  return `${safeName(p?.meta?.project)}_${suffix}_CAMERA_REPORT.pdf`;
+}
+function paginateReportDays(p,days){
+  const measure=document.createElement('div');
+  measure.className='report-docpreview';
+  measure.style.cssText='position:fixed;left:-12000px;top:0;width:794px;visibility:hidden;pointer-events:none;z-index:-1;';
+  document.body.appendChild(measure);
+  const pages=[];
+  try{
+    (days||[]).forEach(d=>{
+      const records=(d.records||[]).slice();
+      if(!records.length){pages.push({day:d,rows:[],partIndex:0});return}
+      let current=[],partIndex=0;
+      records.forEach(record=>{
+        const candidate=current.concat(record);
+        measure.innerHTML=printDayBlock(p,d,candidate,0,1,partIndex);
+        const body=measure.querySelector('.pr-page-body');
+        const fits=body && body.scrollHeight<=body.clientHeight+1;
+        if(fits||current.length===0){current=candidate}
+        else{
+          pages.push({day:d,rows:current,partIndex});
+          partIndex+=1;
+          current=[record];
+        }
+      });
+      if(current.length)pages.push({day:d,rows:current,partIndex});
+    });
+  }finally{measure.remove()}
+  return pages
+}
+function reportPagesHTML(p,days){
+  const pages=paginateReportDays(p,days);
+  const total=pages.length;
+  return pages.map((pg,i)=>printDayBlock(p,pg.day,pg.rows,i,total,pg.partIndex)).join('');
+}
+function fitReportDocumentPreview(){
+  const wrap=$('.report-docpreviewwrap'),stage=$('.report-docpreviewstage'),preview=$('.report-preview');
+  if(!wrap||!stage||!preview)return;
+  const baseWidth=794;
+  preview.style.width=baseWidth+'px';preview.style.transform='none';
+  stage.style.width=baseWidth+'px';stage.style.height='auto';
+  requestAnimationFrame(()=>{
+    const cs=getComputedStyle(wrap),pad=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
+    const available=Math.max(240,wrap.clientWidth-pad);
+    const scale=Math.min(1,available/baseWidth);
+    const height=preview.scrollHeight;
+    preview.style.transform=`scale(${scale})`;
+    stage.style.width=Math.ceil(baseWidth*scale)+'px';
+    stage.style.height=Math.ceil(height*scale)+'px';
+  });
+}
+async function prepareReportPdf(days,opts){
+  const p=current();if(!p||!days.length)return;
+  const pagesHTML=reportPagesHTML(p,days);
+  $('#printReport').innerHTML=pagesHTML;
+  const pages=$$('#printReport .pr-page');
+  const filename=reportPdfFilenameForDays(p,days,opts);
+  const action=$('#openReportPdfAction');
+  clearReportPdfUrl();
+  if(action){action.disabled=true;action.textContent=t('Preparing PDF…')}
+  try{
+    const result=await CDSFixedPdf.exportPages(pages,{
+      wrapperClass:'report-docpreview',
+      filename,
+      onProgress:(n,total)=>{if(action)action.textContent=`${t('Preparing PDF…').replace('…','')} ${n}/${total}`}
+    });
+    reportPdfObjectUrl=result.url;
+    if(action){
+      const link=document.createElement('a');
+      link.id='openReportPdfAction';
+      link.className='solidbtn';
+      link.href=reportPdfObjectUrl;
+      link.target='_blank';
+      link.rel='noopener';
+      link.textContent=t('Open PDF');
+      action.replaceWith(link);
+    }
+  }catch(err){
+    console.error(err);
+    if(action){action.disabled=true;action.textContent=t('PDF generation failed.')}
+    toast(t('PDF generation failed.'));
+  }
+}
+function previewCameraReport(days,opts){
+  const p=current();if(!p||!days.length)return;
+  const pagesHTML=reportPagesHTML(p,days);
+  const body=$('#reportPreviewBody');
+  body.innerHTML=`<div class="report-preview-actions"><button class="solidbtn" id="openReportPdfAction" type="button" disabled>${esc(t('Preparing PDF…'))}</button></div><div class="report-docpreviewwrap"><div class="report-docpreviewstage"><div class="report-docpreview report-preview">${pagesHTML}</div></div></div>`;
+  const h=$('#reportPreviewModal .modalhead h2');if(h)h.textContent=t('Camera Report');
+  $('#reportPreviewModal').classList.remove('hidden');
+  setTimeout(fitReportDocumentPreview,0);
+  prepareReportPdf(days,opts);
+}
+function showInfo(){
+  const body=$('#infoBody');
+  const html={
+    en:`<div class="app-info-panel">
+      <h3>Project data</h3>
+      <p>Project information, shoot days, take records, camera settings, durations, flags and notes are stored locally in this browser and device. CDS does not receive or automatically sync this project data.</p>
+      <h3>Backups</h3>
+      <p>Use <strong>Project backup (.json)</strong> to preserve an editable project or move it to another device. Importing that file restores the project data.</p>
+      <p>PDF and CSV exports are output documents and working records. <strong>They are not restorable backups</strong> and cannot by themselves rebuild the editable project.</p>
+      <h3>Before changing or clearing data</h3>
+      <p>Export a JSON backup before changing phone or computer, clearing browser/site data, removing saved app access, or resetting the browser.</p>
+      <div class="versionline">CDS REPORT / 01 · ${APP_VERSION}</div>
+    </div>`,
+    es:`<div class="app-info-panel">
+      <h3>Datos del proyecto</h3>
+      <p>La información del proyecto, los días de rodaje, registros de toma, ajustes de cámara, duraciones, marcas y notas se guardan localmente en este navegador y dispositivo. CDS no recibe ni sincroniza automáticamente estos datos.</p>
+      <h3>Respaldos</h3>
+      <p>Usa <strong>Respaldo del proyecto (.json)</strong> para conservar un proyecto editable o moverlo a otro dispositivo. Importar ese archivo restaura los datos del proyecto.</p>
+      <p>Los PDF y CSV son documentos de salida y registros de trabajo. <strong>No son respaldos restaurables</strong> y no pueden reconstruir por sí solos el proyecto editable.</p>
+      <h3>Antes de cambiar o borrar datos</h3>
+      <p>Exporta un respaldo JSON antes de cambiar de teléfono o computadora, borrar datos del navegador/sitio, eliminar el acceso guardado a la app o restablecer el navegador.</p>
+      <div class="versionline">CDS REPORT / 01 · ${APP_VERSION}</div>
+    </div>`,
+    fr:`<div class="app-info-panel">
+      <h3>Données du projet</h3>
+      <p>Les informations du projet, jours de tournage, prises, réglages caméra, durées, repères et notes sont stockés localement dans ce navigateur et sur cet appareil. CDS ne reçoit ni ne synchronise automatiquement ces données.</p>
+      <h3>Sauvegardes</h3>
+      <p>Utilisez <strong>Sauvegarde du projet (.json)</strong> pour conserver un projet modifiable ou le déplacer vers un autre appareil. L’importation de ce fichier restaure les données du projet.</p>
+      <p>Les exports PDF et CSV sont des documents de sortie et des registres de travail. <strong>Ce ne sont pas des sauvegardes restaurables</strong> et ils ne permettent pas à eux seuls de reconstruire le projet modifiable.</p>
+      <h3>Avant de changer ou d’effacer des données</h3>
+      <p>Exportez une sauvegarde JSON avant de changer de téléphone ou d’ordinateur, d’effacer les données du navigateur/site, de supprimer l’accès enregistré à l’app ou de réinitialiser le navigateur.</p>
+      <div class="versionline">CDS REPORT / 01 · ${APP_VERSION}</div>
+    </div>`
+  };
+  body.innerHTML=html[lang]||html.en;
+  $('#infoModal').classList.remove('hidden')
+}
+function closeModals(){$$('.modal').forEach(m=>m.classList.add('hidden'));clearReportPdfUrl()}
+function importBackup(file){const reader=new FileReader();reader.onload=()=>{try{const data=JSON.parse(reader.result);if(data.format!==BACKUP_FORMAT||!data.project)throw new Error();const p=ensureProjectShape(data.project);p.id=uid();p.updatedAt=nowISO();p.version=BACKUP_VERSION;p.days.forEach(d=>d.id=uid());p.activeDayId=p.days[0]?.id||null;projects.push(p);saveProjects();toast(t('Project imported.'));renderLaunch()}catch{alert(t('Invalid backup file.'))}};reader.readAsText(file)}
+function setLanguage(next){if(!I18N[next])return;lang=next;localStorage.setItem(LANG_KEY,lang);localizeStatic();if(currentId)renderApp();else renderLaunch();if(!$('#infoModal').classList.contains('hidden'))showInfo()}
+function toggleTheme(){const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem(THEME_KEY,next);document.querySelector('meta[name="theme-color"]').setAttribute('content',next==='dark'?'#0d0d0c':'#f3f0e8')}
+
+$('#newProjectBtn').onclick=()=>{const p=defaultProject();$('#newProjectTitle').value='';$('#newProduction').value='';$('#newCameraId').value=p.meta.cameraId;$('#newShootDate').value=p.days[0].date;$('#projectModal').classList.remove('hidden');setTimeout(()=>$('#newProjectTitle').focus(),10)};
+$('#createProjectBtn').onclick=createProject;$('#createDayBtn').onclick=createDay;$('#confirmSceneBtn').onclick=confirmNewScene;$('#newSceneInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();confirmNewScene()}});$('#importBtn').onclick=()=>$('#fileImport').click();$('#fileImport').onchange=e=>{const f=e.target.files?.[0];if(f)importBackup(f);e.target.value=''};$('#backProjects').onclick=backToProjects;$('#appInfoBtn').onclick=showInfo;$('#themeBtn').onclick=toggleTheme;$$('.langchoice').forEach(b=>b.onclick=()=>setLanguage(b.dataset.lang));$$('.modalClose').forEach(b=>b.onclick=closeModals);$('#reportPreviewClose').onclick=()=>{$('#reportPreviewModal').classList.add('hidden');clearReportPdfUrl()};$$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals()}));document.addEventListener('click',e=>{const menu=$('#mobileSectionMenu'),btn=$('#mobileSectionButton');if(menu&&!menu.classList.contains('hidden')&&!e.target.closest('.mobile-section-control')){menu.classList.add('hidden');if(btn)btn.setAttribute('aria-expanded','false')}});document.addEventListener('click',e=>{if(!e.target.closest('.cds-picker'))closeCdsPickers()});document.addEventListener('click',e=>{if(!e.target.closest('.smart-field'))closeSmartMenus()});
+document.documentElement.dataset.theme=localStorage.getItem(THEME_KEY)||'dark';localizeStatic();window.addEventListener('resize',()=>{if(!$('#reportPreviewModal')?.classList.contains('hidden'))fitReportDocumentPreview()});window.addEventListener('orientationchange',()=>setTimeout(()=>{if(!$('#reportPreviewModal')?.classList.contains('hidden'))fitReportDocumentPreview()},120));
+renderLaunch();
+})();
+</script>
+<script id="cdsFixedLayoutPdfEngine_v2">
+(function(){
+  const A4_PT={portrait:[595.28,841.89],landscape:[841.89,595.28]};
+  const enc=new TextEncoder();
+  const textBytes=s=>enc.encode(s);
+  const concatBytes=parts=>{let n=0;for(const p of parts)n+=p.length;const out=new Uint8Array(n);let o=0;for(const p of parts){out.set(p,o);o+=p.length}return out};
+  const blobBytes=async blob=>new Uint8Array(await blob.arrayBuffer());
+
+  function pdfFromJpegs(images){
+    const count=images.length;
+    const objects=new Array(3+count*3);
+    objects[1]=textBytes('<< /Type /Catalog /Pages 2 0 R >>');
+    const kids=[];
+    for(let i=0;i<count;i++)kids.push(`${3+i*3} 0 R`);
+    objects[2]=textBytes(`<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${count} >>`);
+    for(let i=0;i<count;i++){
+      const pageId=3+i*3,imgId=pageId+1,contentId=pageId+2,im=images[i];
+      const media=im.landscape?A4_PT.landscape:A4_PT.portrait;
+      const content=`q\n${media[0]} 0 0 ${media[1]} 0 0 cm\n/Im0 Do\nQ\n`;
+      objects[pageId]=textBytes(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${media[0]} ${media[1]}] /Resources << /XObject << /Im0 ${imgId} 0 R >> >> /Contents ${contentId} 0 R >>`);
+      objects[imgId]=concatBytes([
+        textBytes(`<< /Type /XObject /Subtype /Image /Width ${im.width} /Height ${im.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.bytes.length} >>\nstream\n`),
+        im.bytes,
+        textBytes('\nendstream')
+      ]);
+      const cb=textBytes(content);
+      objects[contentId]=concatBytes([textBytes(`<< /Length ${cb.length} >>\nstream\n`),cb,textBytes('endstream')]);
+    }
+    const header=concatBytes([textBytes('%PDF-1.4\n%'),new Uint8Array([0xE2,0xE3,0xCF,0xD3]),textBytes('\n')]);
+    const chunks=[header],offsets=new Array(objects.length).fill(0);let offset=header.length;
+    for(let i=1;i<objects.length;i++){
+      offsets[i]=offset;
+      const prefix=textBytes(`${i} 0 obj\n`),suffix=textBytes('\nendobj\n');
+      chunks.push(prefix,objects[i],suffix);offset+=prefix.length+objects[i].length+suffix.length;
+    }
+    const xrefOffset=offset;
+    let xref=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;
+    for(let i=1;i<objects.length;i++)xref+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';
+    const trailer=`trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+    chunks.push(textBytes(xref),textBytes(trailer));
+    return new Blob(chunks,{type:'application/pdf'});
+  }
+
+  const transparent=c=>{
+    if(!c||c==='transparent')return true;
+    const m=c.match(/^rgba?\(([^)]+)\)$/i);
+    return !!(m&&m[1].split(',').length===4&&parseFloat(m[1].split(',')[3])===0);
+  };
+  const px=v=>parseFloat(v)||0;
+
+  function roundedRect(ctx,x,y,w,h,r){
+    r=Math.max(0,Math.min(r,w/2,h/2));
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function drawBox(ctx,el,pageRect){
+    const cs=getComputedStyle(el);
+    if(cs.display==='none'||cs.visibility==='hidden')return false;
+    const r=el.getBoundingClientRect();
+    const x=r.left-pageRect.left,y=r.top-pageRect.top,w=r.width,h=r.height;
+    if(w<=0||h<=0)return false;
+    const bg=cs.backgroundColor;
+    const radius=Math.max(px(cs.borderTopLeftRadius),px(cs.borderTopRightRadius),px(cs.borderBottomLeftRadius),px(cs.borderBottomRightRadius));
+    if(!transparent(bg)){
+      ctx.save();ctx.fillStyle=bg;
+      if(radius>0){roundedRect(ctx,x,y,w,h,radius);ctx.fill()}else ctx.fillRect(x,y,w,h);
+      ctx.restore();
+    }
+    const sides=[
+      ['Top',x,y,x+w,y],
+      ['Right',x+w,y,x+w,y+h],
+      ['Bottom',x,y+h,x+w,y+h],
+      ['Left',x,y,x,y+h]
+    ];
+    for(const [side,x1,y1,x2,y2] of sides){
+      const bw=px(cs['border'+side+'Width']);
+      const bc=cs['border'+side+'Color'];
+      const bs=cs['border'+side+'Style'];
+      if(bw>0&&bs!=='none'&&!transparent(bc)){
+        ctx.save();ctx.strokeStyle=bc;ctx.lineWidth=bw;
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();
+      }
+    }
+    if(el.tagName==='IMG'&&el.complete&&el.naturalWidth){
+      try{ctx.drawImage(el,x,y,w,h)}catch(_){}
+    }
+    return true;
+  }
+
+  function cssFont(cs){
+    const style=cs.fontStyle&&cs.fontStyle!=='normal'?cs.fontStyle+' ':'';
+    const weight=cs.fontWeight||'400';
+    const size=cs.fontSize||'16px';
+    const family=cs.fontFamily||'Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    return `${style}${weight} ${size} ${family}`;
+  }
+
+  function transformText(s,mode){
+    if(mode==='uppercase')return s.toUpperCase();
+    if(mode==='lowercase')return s.toLowerCase();
+    if(mode==='capitalize')return s.replace(/\b\w/g,c=>c.toUpperCase());
+    return s;
+  }
+
+  function drawTextNode(ctx,node,pageRect){
+    const parent=node.parentElement;
+    if(!parent)return;
+    const cs=getComputedStyle(parent);
+    if(cs.display==='none'||cs.visibility==='hidden'||cs.color==='transparent')return;
+    const text=node.nodeValue||'';
+    if(!text.trim())return;
+    ctx.save();
+    ctx.font=cssFont(cs);
+    ctx.fillStyle=cs.color||'#000';
+    ctx.textBaseline='top';
+    const fontSize=px(cs.fontSize)||12;
+    const lineHeight=cs.lineHeight==='normal'?fontSize*1.2:px(cs.lineHeight)||fontSize*1.2;
+    const letter=cs.letterSpacing==='normal'?0:px(cs.letterSpacing);
+    const wordSpace=cs.wordSpacing==='normal'?0:px(cs.wordSpacing);
+    const tracked=Math.abs(letter)>.01||Math.abs(wordSpace)>.01;
+
+    // CDS display typography uses deliberate tracking. Canvas text metrics do
+    // not reproduce CSS letter-spacing reliably in Safari, so for tracked
+    // text use the browser's own per-character geometry as the source of truth.
+    if(tracked){
+      for(let i=0;i<text.length;i++){
+        const raw=text[i];
+        if(/\s/.test(raw))continue;
+        const range=document.createRange();
+        try{
+          range.setStart(node,i);range.setEnd(node,i+1);
+          const rr=range.getBoundingClientRect();
+          if(!rr||(!rr.width&&!rr.height))continue;
+          const ch=transformText(raw,cs.textTransform);
+          const x=rr.left-pageRect.left;
+          const y=rr.top-pageRect.top-Math.max(0,(lineHeight-rr.height)/2);
+          ctx.fillText(ch,x,y);
+        }catch(_){}
+      }
+      ctx.restore();
+      return;
+    }
+
+    // Ordinary copy is rendered word-by-word at the exact browser x/y
+    // positions. This keeps wrapping identical without the expense of a
+    // character range for every body-copy glyph.
+    const tokenRe=/\S+\s*/g;
+    let m;
+    while((m=tokenRe.exec(text))){
+      const start=m.index,end=m.index+m[0].length;
+      const range=document.createRange();
+      try{
+        range.setStart(node,start);range.setEnd(node,end);
+        const rects=Array.from(range.getClientRects());
+        if(!rects.length)continue;
+        const word=transformText(m[0].replace(/\s+$/,''),cs.textTransform);
+        if(!word)continue;
+        for(const rr of rects){
+          const x=rr.left-pageRect.left;
+          const y=rr.top-pageRect.top-Math.max(0,(lineHeight-rr.height)/2);
+          ctx.fillText(word,x,y);
+        }
+      }catch(_){}
+    }
+    ctx.restore();
+  }
+
+  function walkAndDraw(ctx,root,pageRect){
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT);
+    let n=walker.currentNode;
+    while(n){
+      if(n.nodeType===Node.ELEMENT_NODE){
+        const tag=n.tagName;
+        if(tag!=='SCRIPT'&&tag!=='STYLE'&&tag!=='NOSCRIPT')drawBox(ctx,n,pageRect);
+      }else if(n.nodeType===Node.TEXT_NODE){
+        drawTextNode(ctx,n,pageRect);
+      }
+      n=walker.nextNode();
+    }
+  }
+
+  async function rasterPage(source,{wrapperClass,width,height,scale=2}){
+    const host=document.createElement('div');
+    host.className=wrapperClass+' cds-dom-pdf-source';
+    host.style.cssText='position:fixed;left:-20000px;top:0;width:'+width+'px;height:'+height+'px;opacity:0;pointer-events:none;z-index:-2147483647;background:#fff;overflow:hidden;';
+    const page=source.cloneNode(true);
+    page.style.setProperty('width',width+'px','important');
+    page.style.setProperty('height',height+'px','important');
+    page.style.setProperty('min-height',height+'px','important');
+    page.style.setProperty('max-height',height+'px','important');
+    page.style.setProperty('margin','0','important');
+    page.style.setProperty('transform','none','important');
+    page.style.setProperty('box-shadow','none','important');
+    page.style.setProperty('overflow','hidden','important');
+    host.appendChild(page);
+    document.body.appendChild(host);
+    try{
+      if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      const pageRect=page.getBoundingClientRect();
+      if(pageRect.width<10||pageRect.height<10)throw new Error('Document page has no measurable layout');
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.round(width*scale);
+      canvas.height=Math.round(height*scale);
+      const ctx=canvas.getContext('2d',{alpha:false});
+      if(!ctx)throw new Error('Canvas unavailable');
+      ctx.scale(scale,scale);
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,width,height);
+      walkAndDraw(ctx,page,pageRect);
+      const jpeg=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',1.0));
+      if(!jpeg)throw new Error('Canvas JPEG export failed');
+      return {bytes:await blobBytes(jpeg),width:canvas.width,height:canvas.height,landscape:width>height};
+    }finally{host.remove()}
+  }
+
+  window.CDSFixedPdf={
+    async exportPages(pages,{wrapperClass,filename,portraitWidth=794,portraitHeight=1123,onProgress}={}){
+      const source=Array.from(pages||[]);
+      if(!source.length)throw new Error('No document pages to export');
+      const scale=300/96; // 300 ppi A4 output on desktop and mobile
+      const images=[];
+      for(let i=0;i<source.length;i++){
+        const p=source[i];
+        const landscape=p.classList.contains('print-schedule')||p.dataset.orientation==='landscape';
+        const width=landscape?portraitHeight:portraitWidth;
+        const height=landscape?portraitWidth:portraitHeight;
+        if(onProgress)onProgress(i+1,source.length);
+        images.push(await rasterPage(p,{wrapperClass,width,height,scale}));
+        await new Promise(r=>setTimeout(r,0));
+      }
+      const blob=pdfFromJpegs(images);
+      return {blob,url:URL.createObjectURL(blob),filename};
+    }
+  };
+})();
+</script>
+
+<script id="cdsReportPwaRegistration_v1">
+(function(){
+  if('serviceWorker' in navigator &&
+     (location.protocol==='https:' || ['localhost','127.0.0.1'].includes(location.hostname))){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('./sw.js',{scope:'./'})
+        .then(reg=>{reg.update().catch(()=>{});})
+        .catch(()=>{});
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
